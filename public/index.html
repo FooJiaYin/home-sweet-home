@@ -1,0 +1,154 @@
+<!doctype html>
+<html lang="en">
+
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <title>Signin Page</title>
+
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+    <link href="css/signin.css" rel="stylesheet">
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+    
+    <script src="https://www.gstatic.com/firebasejs/5.9.2/firebase.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/5.9.2/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/5.9.2/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/5.9.2/firebase-database.js"></script> 
+    <script type="text/javascript" src="js/config.js"></script>
+    <script type="text/javascript" src="js/firebase.js"></script>
+    <script src="/socket.io/socket.io.js"></script>
+    <script type="text/javascript" src="js/signin.js"></script>
+    <script type="text/javascript" src="js/client.js"></script>
+    <script type="text/javascript" src="js/phaser.min.js"></script>
+    <script type="text/javascript" src="js/boot.js"></script> 
+    <script type="text/javascript" src="js/load.js"></script> 
+    <script type="text/javascript" src="js/map.js"></script> 
+    <script type="text/javascript" src="js/home.js"></script> 
+    <script type="text/javascript" src="js/field.js"></script>  
+    <script type="text/javascript" src="js/game.js"></script> 
+    <style>
+      #canvas{
+        display: none;
+        margin-left: calc(50% - 400px);
+      }
+      #info{
+        left: calc(50% + 300px);
+        top: 0;
+        font-size: 30px;
+        display: none;
+        position: absolute;
+      }
+      #bag{
+        left: calc(50% - 100px);
+        top: 150px;
+        width: 200px;
+        height: 300px;
+        display: none;
+        position: absolute;
+        background: #999999;
+        padding-top: 1px;
+        padding-left: 5px;
+        overflow-x: hidden;
+        overflow-y: scroll;
+      }
+      #sto{
+        left: calc(50% + 400px);
+        top: 8px;
+        width: 150px;
+        height: 600px;
+        display: none;
+        position: absolute;
+        background: #999999;
+        padding-top: 1px;
+        padding-left: 5px;
+        overflow-x: hidden;
+        overflow-y: scroll;
+      }
+      #craft{
+        left: 50%;
+        top: 150px;
+        width: 200px;
+        height: 300px;
+        display: none;
+        position: absolute;
+        background: #999999;
+        padding-top: 1px;
+        padding-left: 5px;
+        overflow-x: hidden;
+        overflow-y: scroll;
+      }
+    </style>
+  </head>
+
+  <body>
+    <div id="sign_in" class="text-center">
+      <div id="custom-alert">
+      </div>
+      <div class="form-signin">
+        <h1 class="h3 mb-3 font-weight-normal">Please sign in/register</h1>
+        <label for="inputUsername" class="sr-only">Username</label>
+        <input type="text" id="inputUsername" class="form-control" placeholder="Enter Username for new user" required>
+        <label for="inputEmail" class="sr-only">Email address</label>
+        <input type="email" id="inputEmail" class="form-control" placeholder="Email address" required autofocus>
+        <label for="inputPassword" class="sr-only">Password</label>
+        <input type="password" id="inputPassword" class="form-control" placeholder="Password" required>
+        <div class="checkbox mb-3">
+          <label>
+            <input type="checkbox" value="remember-me"> Remember me
+          </label>
+        </div>
+        <button class="btn btn-lg btn-primary btn-block" id="btnLogin">Sign in</button>
+        <button class="btn btn-lg btn-secondary btn-block" id="btnSignUp">New account</button>
+      </div>
+    </div>
+
+    <div id='canvas'></div>
+      <div id='info'>
+        <p>
+          LV :<span id="lv">1</span></br>
+          HP:<span id="hp">20</span>
+        </p>
+      </div>
+      <div id='bag'>
+        <span style="font-size: 25px;">背包</span>
+        <p>
+          <span><input type="button" value="升級" onclick="up('wood','wood2')"></span>
+          木頭 x <span id="wood">0</span>
+        </p>
+        <p>
+          <span><input type="button" value="升級" onclick="up('wood2','wood3')"></span>
+          普通木材 x <span id="wood2">0</span>
+        </p>
+        <p>
+          <span><input type="button" value="升級" disabled></span>
+          高級木材 x <span id="wood3">0</span></p>
+        <p>石頭 x <span id="stone">0</span></p>
+        <p>骨頭 x <span id="bone">0</span></p>
+      </div>
+      <div id='sto'>
+        <span style="font-size: 25px;">倉庫</span>
+        <p>
+          <span><input type="button" value="擺放" onclick="place('table')"></span>
+          桌子 x <span id="table">3</span></p>
+        <p>
+          <span><input type="button" value="擺放" onclick="place('chair')"></span>
+          椅子 x <span id="chair">2</span></p>
+      </div>
+      <div id='craft'>
+          <span style="font-size: 25px;">合成</span>
+          <p>
+            <span><input type="button" value="製作" onclick="craft('table','wood3',1)"></span>
+            桌子 </br>(高級木材 x1)
+          </p>
+          <p>
+            <span><input type="button" value="製作" onclick="craft('chair','wood2',2)"></span>
+            椅子 </br>(普通木材 x2)</p>
+      </div>
+    </body>  
+    </body>
+</html>  

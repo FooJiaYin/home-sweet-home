@@ -1,0 +1,32 @@
+{
+	/* Visit https://firebase.google.com/docs/database/security to learn more about security rules. */
+	"rules": {
+		"users": {
+			"$uid": {
+				".read": "$uid === auth.uid",
+				".write": "$uid === auth.uid"
+			}
+		},
+		"profile": {
+			".read": true,
+			"$uid": {
+        "info": {
+          ".read": true,
+          ".write": true
+				},
+				"avatar": {
+          ".read": true,
+          ".write": "$uid === auth.uid"
+				},
+				"bag": {
+          ".read": true,
+          ".write": "$uid === auth.uid"
+        },
+        "home": {
+          ".read": true,
+          ".write": "$uid === auth.uid"
+        }
+      }
+		}
+	}
+}
