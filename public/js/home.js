@@ -13,6 +13,7 @@ var homeState = {
     game.items = game.add.group();
     game.items.enableBody = true;
     firebase.database().ref('profile/' + userId + '/home/furniture').once('value', function(snapshot) {
+      console.log("load furniture");
       var i = 0;
       snapshot.forEach(function(childSnapshot) {
         game.global.furn[i] = {
@@ -25,6 +26,7 @@ var homeState = {
       //game.global.furn = snapshot.val();
       console.log(game.global.furn);
     }).then(function() {
+      console.log("put furniture");
       for (var i = 0; i < game.global.furn.length; i++){
         x = game.items.create(game.global.furn[i].x, game.global.furn[i].y, game.global.furn[i].type);
         x.type = game.global.furn[i].type;
@@ -119,7 +121,7 @@ var homeState = {
     await game.items.forEach(function(i) {
       if(i.type!="player") game.global.furn.push({type:i.type, x:i.x, y:i.y});
     }, this);
-    await firebase.database().ref('profile/' + userId + '/home/furniture').set(game.global.furn);
+    await saveState();
     game.state.start('map'); 
   },
   toField: async function() {
@@ -134,10 +136,10 @@ var homeState = {
     await game.items.forEach(function(i) {
       if(i.type!="player") game.global.furn.push({type:i.type, x:i.x, y:i.y});
     }, this);
-    await firebase.database().ref('profile/' + userId + '/home/furniture').set(game.global.furn);
+    await saveState();
     game.state.start('field');  
   },
-  openStorage: function() {
+  openStorage: async function() {
     var sto = document.getElementById("sto");
     if(sto.style.display == "none"){
       sto.style.display = "block"; 
@@ -150,13 +152,16 @@ var homeState = {
           i.input.enableDrag();
         }        
       }, this);
-    }else{
-      saveState();
+    }else{   
+      game.global.furn = [];
+      await game.items.forEach(function(i) {
+        if(i.type!="player") game.global.furn.push({type:i.type, x:i.x, y:i.y});
+      }, this);
+      await saveState();
       sto.style.display = "none";
       this.player.visible = true;
       this.trash.visible = false;
       this.decorating = 0;
-      game.global.furn = [];
       game.items.forEach(function(i) {
         if(i.type!="player") i.inputEnabled = false;
       }, this);
@@ -171,6 +176,7 @@ var homeState = {
     }else{
       bag.style.display = "none"; 
       cra.style.display = "none"; 
+      saveState();
     }
   },
 }; 

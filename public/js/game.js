@@ -183,9 +183,9 @@ game.state.add('load', loadState);
 game.state.add('map', mapState);
 game.state.add('home', homeState);
 game.state.add('field', fieldState); 
-// Start the 'boot' state 
 
 game.global.furn = [{type:"table",x:80,y:500},{type:"chair",x:230,y:550},{type:"table",x:430,y:500}];
+console.log("reset furniture");
 
 
 function up(a,b) {

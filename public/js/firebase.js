@@ -48,9 +48,10 @@ loadValues = async function() {
         document.getElementById('table').innerHTML = snapshot.val().tableNo;
         document.getElementById('chair').innerHTML = snapshot.val().chairNo;
     });
+    //firebase.database().ref('profile/' + userId + '/home/furniture').once('value', function(snapshot));
 }
 
-saveState = function() {
+saveState = async function() {
     var lv = document.getElementById('lv').innerHTML;
     var hp = document.getElementById('hp').innerHTML;
     var wood1No = Number(document.getElementById('wood').innerHTML);
@@ -65,7 +66,8 @@ saveState = function() {
         lv: lv,
         hp: hp
     });
-    firebase.database().ref('profile/' + userId + '/home/furniture').set(game.global.furn);
+    console.log("furn", game.global.furn);
+    await firebase.database().ref('profile/' + userId + '/home/furniture').set(game.global.furn);
     firebase.database().ref('profile/' + userId + '/home/storage').set({
         tableNo: tableNo,
         chairNo: chairNo
