@@ -1,5 +1,4 @@
-var livingEnemies1, livingEnemies2;
-
+//var livingForest, livingSnow, livingGrass, livingMine, livingBeach;
 var fieldState = { 
   preload: function() {
     game.stage.disableVisibilityChange = true;
@@ -7,19 +6,17 @@ var fieldState = {
   create: function() {
     loadValues();
     Client.initState('field');
-    var info = document.getElementById("info");
-    info.style.display = "block"; 
     var bag = document.getElementById("bag");
     bag.style.left = "calc(50% - 75px)";
     bag.style.display = "none";
     var cra = document.getElementById("craft");
     cra.style.display = "none";
-    this.bg = game.add.tileSprite(0, 0, 2000, 1500, 'field');
-    game.world.setBounds(0, 0, 2000, 1500);
+    this.bg = game.add.tileSprite(0, 0, 2000, 2000, 'field');
+    game.world.setBounds(0, 0, 2000, 2000);
     this.playing = 1;
 
-    this.borderH = 2000/2;
-    this.borderV = 1500/2;
+    this.borderH = 600;
+    this.borderV = 600;
 
     this.woods = game.add.group();
     this.woods.enableBody = true;
@@ -27,69 +24,113 @@ var fieldState = {
     this.woods.forEach(function(w) {
       w.anchor.setTo(0.5, 0.5);
     }, this);
-
-    this.enemies = [];
-    this.monsters = game.add.group();
-    this.monsters.enableBody = true;
+    this.circles = game.add.group();
+    this.circles.enableBody = true;
+    this.circles.createMultiple(30, 'attackcircle');
+    this.circles.forEach(function(c) {
+      c.anchor.setTo(0.5, 0.5);
+    }, this);
+    
+    /* Enemies */
     var i = 0;
-    this.monsters.createMultiple(10, 'monster');
-    this.monsters.forEach(function(m) {
-      m.id = i;
+    this.enemies = [];
+
+    this.twigs = game.add.group();
+    this.twigs.enableBody = true;
+    this.twigs.createMultiple(2, 'twig');
+    this.twigs.forEach(function(m) {
       m.anchor.setTo(0.5, 0.5);
       m.blood = 3;
+      m.attack = 0;
       m.label = game.add.text(-20, -20, 'hp: 3', { font: '15px Microsoft JhengHei', backgroundColor: 'white'});
       m.type = "forest";
-      this.enemies[i++] = m;
+      m.id = i;
+      m.isAlive = true;
+      fieldState.enemies[i++] = m;
       m.kill();
     }, this);
     
-    this.monsters2 = game.add.group();
-    this.monsters2.enableBody = true;
-    this.monsters2.createMultiple(10, 'monster2');
-    this.monsters2.forEach(function(m) {
-      m.id = i;
+    this.whitewalkers = game.add.group();
+    this.whitewalkers.enableBody = true;
+    this.whitewalkers.createMultiple(2, 'whitewalker');
+    this.whitewalkers.forEach(function(m) {
       m.anchor.setTo(0.5, 0.5);
       m.blood = 3;
       m.label = game.add.text(-20, -20, 'hp: 3', { font: '15px Microsoft JhengHei', backgroundColor: 'white'});
       m.notattacked = 5;
       m.type = "snow";
-      game.time.events.add(1000, function() {m.notattacked = (m.notattacked==5)?m.notattacked:m.notattacked++;}, this);
-      //not attacked in 5 sec means dont attack  
-      this.enemies[i++] = m;
+      m.id = i;
+      m.isAlive = true;
+      fieldState.enemies[i++] = m;
+      m.kill();
+      //game.time.events.add(1000, function() {m.notattacked = (m.notattacked==5)?m.notattacked:m.notattacked++;}, this);
+      //not attacked in 5 sec means dont attack
+    }, this);
+
+    this.barbarians = game.add.group();
+    this.barbarians.enableBody = true;
+    this.barbarians.createMultiple(2, 'barbarian');
+    this.barbarians.forEach(function(m) {
+      m.anchor.setTo(0.5, 0.5);
+      m.blood = 3;
+      m.attack = 0;
+      m.label = game.add.text(-20, -20, 'hp: 3', { font: '15px Microsoft JhengHei', backgroundColor: 'white'});
+      m.notattacked = 5;
+      m.type = "grass";
+      m.id = i;
+      m.isAlive = true;
+      fieldState.enemies[i++] = m;
       m.kill();
     }, this);
 
+    this.stonemans = game.add.group();
+    this.stonemans.enableBody = true;
+    this.stonemans.createMultiple(2, 'stoneman');
+    this.stonemans.forEach(function(m) {
+      m.anchor.setTo(0.5, 0.5);
+      m.blood = 3;
+      m.label = game.add.text(-20, -20, 'hp: 3', { font: '15px Microsoft JhengHei', backgroundColor: 'white'});
+      m.notattacked = 5;
+      m.type = "mine";
+      m.id = i;
+      m.isAlive = true;
+      fieldState.enemies[i++] = m;
+      m.kill();
+    }, this);
+
+    this.fishs = game.add.group();
+    this.fishs.enableBody = true;
+    this.fishs.createMultiple(2, 'fish');
+    this.fishs.forEach(function(m) {
+      m.anchor.setTo(0.5, 0.5);
+      m.blood = 3;
+      m.attack = 0;
+      m.label = game.add.text(-20, -20, 'hp: 3', { font: '15px Microsoft JhengHei', backgroundColor: 'white'});
+      m.notattacked = 5;
+      m.type = "beach";
+      m.id = i;
+      m.isAlive = true;
+      fieldState.enemies[i++] = m;
+      m.kill();
+    }, this);
+
+    this.store = game.add.sprite(600, 1100, 'store');
+    this.store.inputEnabled = true;
+    this.store.events.onInputDown.add(this.openStore, this);
+    game.physics.arcade.enable(this.store);
+    this.store.body.immovable = true;
+
+    this.playersList = [];
     this.playerGroup = game.add.group();
     this.playerGroup.setAll('anchor.x', 0.5);
     this.playerGroup.setAll('anchor.y', 0.5);
     this.playerGroup.setAll('body.collideWorldBounds', true);
     game.physics.arcade.enable(this.playerGroup);
-    /*this.playerGroup.callAll('animations.add', 'animations', 'goforward', [0, 1, 2, 3], 8, true);
-    this.playerGroup.callAll('animations.add', 'animations', 'goleft', [4, 5, 6, 7], 8, true);
-    this.playerGroup.callAll('animations.add', 'animations', 'goright', [8, 9, 10, 11], 8, true);
-    this.playerGroup.callAll('animations.add', 'animations', 'gobackward', [12, 13, 14, 15], 8, true);*/
-    this.playersList = [];
-    /*
-    this.player = game.add.sprite(400, 300, 'player');
-    this.player.anchor.setTo(0.5, 0.5); 
-    this.player.facing = 0;
-    this.player.animations.add('goforward', [0, 1, 2, 3], 8, true);
-    this.player.animations.add('goleft', [4, 5, 6, 7], 8, true);
-    this.player.animations.add('goright', [8, 9, 10, 11], 8, true);
-    this.player.animations.add('gobackward', [12, 13, 14, 15], 8, true);
-    game.physics.arcade.enable(this.player);
-    game.camera.follow(this.player);
-    this.player.body.collideWorldBounds = true;
-    this.hp = document.getElementById("hp");
-    this.player.health = this.hp.innerHTML; 
-    */
+    
     this.swords = game.add.group();
-    this.swords_b = game.add.group();
-    this.swords_b.createMultiple(50, 'sword');
     this.swords.createMultiple(50, 'sword');
     this.swords.enableBody = true;
     this.swords.physicsBodyType = Phaser.Physics.ARCADE; 
-    this.swords_b.physicsBodyType = Phaser.Physics.ARCADE;
     this.swords.forEach(function(a) {
       a.kill();
     }, this); 
@@ -106,6 +147,8 @@ var fieldState = {
     }, this);
     this.cursor = game.input.keyboard.createCursorKeys();
 
+    this.life = game.add.text(700, 20, 'HP:20', { font: '30px Arial'} );
+    this.life.fixedToCamera = true;
     this.map = game.add.text(700, 400, '地圖', { font: '40px Microsoft JhengHei', backgroundColor: 'white'});
     this.map.inputEnabled = true;
     this.map.fixedToCamera = true;
@@ -119,14 +162,11 @@ var fieldState = {
     this.bag.fixedToCamera = true;
     this.bag.events.onInputDown.add(this.openBag, this);
 
-    this.closeA = game.add.text(20, 460, '近戰', { font: '40px Microsoft JhengHei', backgroundColor: 'white'});
-    this.closeA.inputEnabled = true;
-    this.closeA.fixedToCamera = true;
-    this.closeA.events.onInputDown.add(this.swordA, this);
-    this.farA = game.add.text(20, 520, '遠程', { font: '40px Microsoft JhengHei', backgroundColor: 'white'});
-    this.farA.inputEnabled = true;
-    this.farA.fixedToCamera = true;
-    this.farA.events.onInputDown.add(this.arrowA, this);
+    this.keyQ = game.input.keyboard.addKey(Phaser.Keyboard.Q);
+    this.keyQ.onDown.add(this.swordA, this);
+    this.keyW = game.input.keyboard.addKey(Phaser.Keyboard.W);
+    this.keyW.onDown.add(this.arrowA, this);
+    this.keyE = game.input.keyboard.addKey(Phaser.Keyboard.E);
 
     this.genW = game.add.text(20, 20, 'W', { font: '40px Microsoft JhengHei', backgroundColor: 'white'});
     this.genW.inputEnabled = true;
@@ -137,377 +177,253 @@ var fieldState = {
     this.stones.enableBody = true;
     this.stones.createMultiple(30, 'stone');
 
-    this.bones = game.add.group();
-    this.bones.enableBody = true;
-    this.bones.createMultiple(30, 'bone');
+    //石頭(all)、木材(forest)、冰(snow)、ㄇㄇ蟲(草地)、棉花(evil)、礦(evil)、貝殼(beach) )
+    this.ices = game.add.group();
+    this.ices.enableBody = true;
+    this.ices.createMultiple(100, 'ice');
+    
+    this.caterpillars = game.add.group();
+    this.caterpillars.enableBody = true;
+    this.caterpillars.createMultiple(100, 'caterpillar');
+
+    this.coals = game.add.group();
+    this.coals.enableBody = true;
+    this.coals.createMultiple(30, 'coal');
+
+    this.shells = game.add.group();
+    this.shells.enableBody = true;
+    this.shells.createMultiple(30, 'shell');
+
+    this.growTime = 0;
+    this.genEnemyTime = 0;
+    //left
+    this.forestlefts = game.add.group();
+    this.forestlefts.enableBody = true;
+    this.forestlefts.createMultiple(30, 'forestleft');
+
+    this.snowlefts = game.add.group();
+    this.snowlefts.enableBody = true;
+    this.snowlefts.createMultiple(30, 'snowleft');
+
+    this.minelefts = game.add.group();
+    this.minelefts.enableBody = true;
+    this.minelefts.createMultiple(30, 'mineleft');
+
+    this.grasslefts = game.add.group();
+    this.grasslefts.enableBody = true;
+    this.grasslefts.createMultiple(30, 'grassleft');
+
+    this.beachlefts = game.add.group();
+    this.beachlefts.enableBody = true;
+    this.beachlefts.createMultiple(30, 'beachleft');
+
+    
     ////enemy by shuling
     //enemy
-    //enemies1 bullet
     this.enemyBulletsList = [];
-    this.enemyBullets= game.add.group();
-    this.enemyBullets.enableBody = true;
-    this.enemyBullets.physicsBodyType = Phaser.Physics.ARCADE; 
-    this.enemyBullets.createMultiple(100, 'enemyBullet');
-    this.enemyBullets.setAll('anchor.x', 0.5);
-    this.enemyBullets.setAll('anchor.y', 0);
-    this.enemyBullets.setAll('outOfBoundsKill', true);
-    this.enemyBullets.setAll('checkWorldBounds', true);
-    i = 0;
-    this.enemyBullets.forEach(function(b) {
+    //enemies1 bullet
+    this.forestBullets= game.add.group();
+    this.forestBullets.enableBody = true;
+    this.forestBullets.physicsBodyType = Phaser.Physics.ARCADE; 
+    this.forestBullets.createMultiple(50, 'forestleft');
+    this.forestBullets.setAll('anchor.x', 0.5);
+    this.forestBullets.setAll('anchor.y', 0);
+    this.forestBullets.setAll('outOfBoundsKill', true);
+    this.forestBullets.setAll('checkWorldBounds', true);
+    this.forestBullets.forEach(function (b) {
       b.id = i;
       b.type = "forest";
       this.enemyBulletsList[i++] = b;
       b.kill();
     }, this);
     //enemy2 bullets
-    this.enemyBullets2= game.add.group();
-    this.enemyBullets2.enableBody = true;
-    this.enemyBullets2.physicsBodyType = Phaser.Physics.ARCADE; 
-    this.enemyBullets2.createMultiple(100, 'enemyBullet2');
-    this.enemyBullets2.setAll('anchor.x', 0.5);
-    this.enemyBullets2.setAll('anchor.y', 0);
-    this.enemyBullets2.setAll('outOfBoundsKill', true);
-    this.enemyBullets2.setAll('checkWorldBounds', true);
-    this.enemyBullets2.forEach(function(b) {
+    this.snowBullets= game.add.group();
+    this.snowBullets.enableBody = true;
+    this.snowBullets.physicsBodyType = Phaser.Physics.ARCADE; 
+    this.snowBullets.createMultiple(50, 'snowleft');
+    this.snowBullets.setAll('anchor.x', 0.5);
+    this.snowBullets.setAll('anchor.y', 0);
+    this.snowBullets.setAll('outOfBoundsKill', true);
+    this.snowBullets.setAll('checkWorldBounds', true);
+    this.snowBullets.forEach(function (b) {
       b.id = i;
       b.type = "snow";
       this.enemyBulletsList[i++] = b;
       b.kill();
     }, this);
+
+    this.grassBullets= game.add.group();
+    this.grassBullets.enableBody = true;
+    this.grassBullets.physicsBodyType = Phaser.Physics.ARCADE; 
+    this.grassBullets.createMultiple(50, 'grassleft');
+    this.grassBullets.setAll('anchor.x', 0.5);
+    this.grassBullets.setAll('anchor.y', 0);
+    this.grassBullets.setAll('outOfBoundsKill', true);
+    this.grassBullets.setAll('checkWorldBounds', true);
+    this.grassBullets.forEach(function (b) {
+      b.id = i;
+      b.type = "grass";
+      this.enemyBulletsList[i++] = b;
+      b.kill();
+    }, this);
+
+    this.mineBullets= game.add.group();
+    this.mineBullets.enableBody = true;
+    this.mineBullets.physicsBodyType = Phaser.Physics.ARCADE; 
+    this.mineBullets.createMultiple(50, 'mineleft');
+    this.mineBullets.setAll('anchor.x', 0.5);
+    this.mineBullets.setAll('anchor.y', 0);
+    this.mineBullets.setAll('outOfBoundsKill', true);
+    this.mineBullets.setAll('checkWorldBounds', true);
+    this.mineBullets.forEach(function (b) {
+      b.id = i;
+      b.type = "mine";
+      this.enemyBulletsList[i++] = b;
+      b.kill();
+    }, this);
+
+    this.beachBullets= game.add.group();
+    this.beachBullets.enableBody = true;
+    this.beachBullets.physicsBodyType = Phaser.Physics.ARCADE; 
+    this.beachBullets.createMultiple(50, 'beachleft');
+    this.beachBullets.setAll('anchor.x', 0.5);
+    this.beachBullets.setAll('anchor.y', 0);
+    this.beachBullets.setAll('outOfBoundsKill', true);
+    this.beachBullets.setAll('checkWorldBounds', true);
+    this.beachBullets.forEach(function (b) {
+      b.id = i;
+      b.type = "beach";
+      this.enemyBulletsList[i++] = b;
+      b.kill();
+    }, this);
+
     //loop
     game.time.events.loop(200, this.moveEnemy, this);
-    game.time.events.loop(5000, this.enemy1Shoot, this);
-    game.time.events.loop(5000, this.enemy2Shoot, this);
-    game.time.events.loop(3000, this.generateEnemy, this);
-    game.time.events.loop(4000, this.generateEnemy2, this);
+    //game.time.events.loop(50, this.enemyAttack, this);
+    game.time.events.loop(1000, this.enemyShoot, this);
+    //game.time.events.loop(16000, this.generateEnemy, this);
+    game.time.events.loop(1000, this.generateEnemy, this);
+    game.time.events.loop(2000, this.growElement, this);
 
   }, 
   update: function() {
-    if(this.playing) {
-      if(this.player && this.player.body) this.movePlayer();
-      this.enemyAlive();
-      this.updateEnemyLabel();
+    if(this.playing && this.player && this.player.body){
+      this.movePlayer();
       this.playerGroup.sort('y', Phaser.Group.SORT_ASCENDING);
-      game.physics.arcade.overlap(this.swords, this.monsters, this.attack_c, null, this);
-      game.physics.arcade.overlap(this.sword_b, this.monsters, this.attack_c, null, this);
-      game.physics.arcade.overlap(this.arrows, this.monsters, this.attack_f, null, this);
-      game.physics.arcade.overlap(this.swords, this.monsters2, this.attack_c, null, this);
-      game.physics.arcade.overlap(this.sword_b, this.monsters2, this.attack_c, null, this);
-      game.physics.arcade.overlap(this.arrows, this.monsters2, this.attack_f, null, this);
+      //this.enemyAlive();
+      this.updateEnemyLabel();
+      //this.updateText();
+      //this.playerGroup.sort('y', Phaser.Group.SORT_ASCENDING);
+      game.physics.arcade.collide(this.player, this.store);
+      game.physics.arcade.overlap(this.player, this.circles, this.hurt, null, this);
+      game.physics.arcade.overlap(this.swords, this.twigs, this.attack_c, null, this);
+      //game.physics.arcade.overlap(this.sword_b, this.twigs, this.attack_c, null, this);
+      game.physics.arcade.overlap(this.arrows, this.twigs, this.attack_f, null, this);
+      game.physics.arcade.overlap(this.swords, this.whitewalkers, this.attack_c, null, this);
+      //game.physics.arcade.overlap(this.sword_b, this.whitewalkers, this.attack_c, null, this);
+      game.physics.arcade.overlap(this.arrows, this.whitewalkers, this.attack_f, null, this);
+      game.physics.arcade.overlap(this.swords, this.barbarians, this.attack_c, null, this);
+      //game.physics.arcade.overlap(this.sword_b, this.barbarians, this.attack_c, null, this);
+      game.physics.arcade.overlap(this.arrows, this.barbarians, this.attack_f, null, this);
+      game.physics.arcade.overlap(this.swords, this.stonemans, this.attack_c, null, this);
+      //game.physics.arcade.overlap(this.sword_b, this.stonemans, this.attack_c, null, this);
+      game.physics.arcade.overlap(this.arrows, this.stonemans, this.attack_f, null, this);
+      game.physics.arcade.overlap(this.swords, this.fishs, this.attack_c, null, this);
+      //game.physics.arcade.overlap(this.sword_b, this.fishs, this.attack_c, null, this);
+      game.physics.arcade.overlap(this.arrows, this.fishs, this.attack_f, null, this);
       game.physics.arcade.overlap(this.player, this.woods, this.pickUp, null, this);
-      game.physics.arcade.overlap(this.player, this.enemyBullets, this.hurt, null, this);
-      game.physics.arcade.overlap(this.player, this.enemyBullets2, this.hurt, null, this);
+      game.physics.arcade.overlap(this.player, this.forestBullets, this.hurt, null, this);
+      game.physics.arcade.overlap(this.player, this.snowBullets, this.hurt, null, this);
     }
   },
-  setPlayerId: function(newId) {
-    this.playerId = newId;
-  },
-  addNewPlayer: function(id, x, y, skin) {
-      if(skin==1) this.playersList[id] = game.add.sprite(x, y, 'player');
-      this.playersList[id].id = id;
-      this.playersList[id].freeze = false;
-      this.playerGroup.add(this.playersList[id]);
-      game.physics.arcade.enable(this.playersList[id]);
-      this.playersList[id].body.collideWorldBounds = true;
-      this.playersList[id].animations.add('goforward', [0, 1, 2, 3], 8, true);
-      this.playersList[id].animations.add('goleft', [4, 5, 6, 7], 8, true);
-      this.playersList[id].animations.add('goright', [8, 9, 10, 11], 8, true);
-      this.playersList[id].animations.add('gobackward', [12, 13, 14, 15], 8, true);
-      if(id == this.playerId) {
-        this.player = this.playersList[id];
-        game.camera.follow(this.player);
-        this.player.facing = 0;
-        this.hp = document.getElementById("hp");
-        this.player.health = this.hp.innerHTML;
-      }
-  },
-  updatePlayer: function(id, x, y, animation, facing) {
-    this.playersList[id].x = x;
-    this.playersList[id].y = y;
-    if(animation == null) {
-      this.playersList[id].animations.stop();
-      this.playersList[id].frame = facing*4;
-    }
-    else this.playersList[id].animations.play(animation);
-  },
-  removePlayer: function(id) {
-    this.playersList[id].destroy();
-    delete this.playersList[id];
-  },
-  addEnemy: function(id, x, y, type, blood) {
-    console.log(this.enemies);
-    var enemy;
-    if(type == "forest") {
-      enemy = this.monsters.getFirstDead();  
-      this.enemies[id] = this.monsters.getFirstDead();  
-    }  
-    else if(type == "snow") {
-      enemy = this.monsters2.getFirstDead();   
-      this.enemies[id] = this.monsters2.getFirstDead();
-    } 
-    if (!enemy) return;
-    //this.enemies[id] = enemy;
-    this.enemies[id].id = id;
-    this.enemies[id].anchor.setTo(0.5, 0.5);
-    this.enemies[id].reset(x, y);
-    this.enemies[id].label = game.add.text(-20, -20, 'hp: 3', { font: '15px Microsoft JhengHei', backgroundColor: 'white'});
-    this.enemies[id].type = type;
-    this.enemies[id].body.gravity.y = 0;
-    this.enemies[id].blood = 3;
-    this.enemies[id].label.visible = true;
-    this.enemies[id].label.x = enemy.x-5;
-    this.enemies[id].label.y = enemy.y-100;
-    this.enemies[id].body.velocity.x = 0;
-    this.enemies[id].checkWorldBounds = true;
-    this.enemies[id].outOfBoundsKill = true;
-  },
-  updateEnemy: function(id, x, y, blood/*, animation, facing*/) {
-    this.enemies[id].x = x;
-    this.enemies[id].y = y;
-    this.enemies[id].blood = blood;
-    /*if(animation == null) {
-      this.enemies[id].animations.stop();
-      this.enemies[id].frame = facing*4;
-    }
-    else this.enemies[id].animations.play(animation);*/
-  },
-  removeEnemy: function(id) {
-    this.enemies[id].label.visible = false;
-    this.enemies[id].kill();
-  },
-  updateEnemyLabel: function()
-  {
-    this.monsters.forEachAlive(function(enemy){
-      enemy.label.x = enemy.x-5;
-      enemy.label.y = enemy.y-100;
-      enemy.label.text = "hp: "+enemy.blood;
-    });
-    this.monsters2.forEachAlive(function(enemy){
-      enemy.label.x = enemy.x-5;
-      enemy.label.y = enemy.y-100;
-      enemy.label.text = "hp: "+enemy.blood;
-    });
-  },
-  addBullet: function(id, x, y, velocityX, velocityY, type) {
-    console.log("addBullet", id);
-    if(type=="forest") this.enemyBulletsList[id] = this.enemyBullets.getFirstExists(false); 
-    else if(type=="snow") this.enemyBulletsList[id] = this.enemyBullets2.getFirstExists(false); 
-    this.enemyBulletsList[id].id = id;
-    this.enemyBulletsList[id].reset(x, y);
-    this.enemyBulletsList[id].body.velocity.x = velocityX;
-    this.enemyBulletsList[id].body.velocity.y = velocityY;
-    this.enemyBulletsList[id].events.onOutOfBounds.add(function() { 
-      //console.log("OutOfBounds");
-      Client.killBullet(id, "OutOfBounds");
-    }, this);
 
-  },
-  removeBullet: function(id) {
-    this.bullets[id].kill();
-  },
-  movePlayer: function() { 
-    if(this.player.freeze){
-      this.player.body.velocity.x = 0;
-      this.player.body.velocity.y = 0;
-      this.player.frame = this.player.facing*4;
-      this.player.animations.stop();
-    }else if (this.cursor.left.isDown) { 
-      this.player.body.velocity.x = -200;
-      this.player.body.velocity.y = 0;
-      this.player.facing = 1;
-      this.player.animations.play('goleft');
-    }else if (this.cursor.right.isDown) { 
-      this.player.body.velocity.x = 200;
-      this.player.body.velocity.y = 0;
-      this.player.facing = 2;
-      this.player.animations.play('goright');
-    }else if (this.cursor.up.isDown) { 
-      this.player.body.velocity.x = 0;
-      this.player.body.velocity.y = -200;
-      this.player.facing = 3;
-      this.player.animations.play('gobackward');
-    }else if (this.cursor.down.isDown) { 
-      this.player.body.velocity.x = 0;
-      this.player.body.velocity.y = 200;
-      this.player.facing = 0;
-      this.player.animations.play('goforward');
-    }else {
-      this.player.body.velocity.x = 0;
-      this.player.body.velocity.y = 0;
-      this.player.frame = this.player.facing*4;
-      this.player.animations.stop();
-    }    
-    if(this.player.animations.currentAnim.isPlaying) {
-      Client.movePlayer(this.player.x, this.player.y, this.player.animations.currentAnim.name, this.player.facing);
-    }
-    else Client.movePlayer(this.player.x, this.player.y, null, this.player.facing);
-  },
+  /* Generate Materials */
   genWood: function() {
     var w = this.woods.getFirstExists(false);
     if(w) w.reset(game.rnd.integerInRange(this.player.x-200, this.player.x+200), game.rnd.integerInRange(this.player.y-200, this.player.y+200));
   },
-  swordA: function() {
-    this.showSword(this.player);
-    //console.log(this.player.freeze);
-    Client.attack('sword');
-  },
-  showSword: function(player) {
-    var sword = this.swords.getFirstDead();
-    sword.x = -40;
-    sword.y = -40;
-    sword.x = -40;
-    sword.y = -40;
-    sword.lifeS
-    if (player.facing == 0) { 
-      sword.frame = 0;
-      sword.reset(player.x-10, player.y-10);
-    }else if (player.facing == 1) { 
-      sword.frame = 1;
-      sword.reset(player.x-32, player.y-10);
-      sword.x = player.x-32;
-      sword.y = player.y-10;
-    }else if (player.facing == 2) { 
-      sword.frame = 0;
-      sword.reset(player.x, player.y-10);
-      sword.x = player.x;
-      sword.y = player.y-10;
-    }else {
-      sword.frame = 1;
-      sword.reset(player.x-32, player.y-10);
-    }    
-    this.playersList[player.id].freeze = true;
-    game.time.events.add(500, function() {
-      sword.kill();
-      this.player.freeze = false;
-    }, this);
-  },
-  arrowA: function() {
-    this.createArrow(this.player);
-    Client.attack('arrow');
-  },
-  createArrow: function(player) {
-    var a = this.arrows.getFirstExists(false);
-    if(a){
-      a.reset(game.rnd.integerInRange(player.x-200, player.x+200), game.rnd.integerInRange(player.y-200, player.y+200));
-      a.frame = player.facing;
-      if (player.facing == 0) {
-        a.body.velocity.y = 400;
-        a.x = player.x;
-        a.y = player.y+50;
-      }else if (player.facing == 1) { 
-        a.body.velocity.x = -400;
-        a.x = player.x-40;
-        a.y = player.y+15;
-      }else if (player.facing == 2) { 
-        a.body.velocity.x = 400;
-        a.x = player.x+40;
-        a.y = player.y+15;
-      }else {
-        a.body.velocity.y = -400;
-        a.x = player.x;
-        a.y = player.y-50;
-      }   
-      game.time.events.add(1000, function() {a.kill();}, this);
-    }
-  },
-  attack_c: function(weapon, monster) {
-    
-    monster.blood--;
-    if(monster.type=="snow")
-    {
-      monster.notattacked = 0;
-    }
-    if(monster.blood<=0)
-    {
-      this.monsterDie(monster.x, monster.y, monster.type);
-      //console.log(monster.id);
-      Client.killEnemy(monster.id);
-    }
-    else Client.moveEnemy(monster.id, monster.x, monster.y, monster.blood/*, monster.animations.currentAnim.name, monster.facing*/);
-  },
-  attack_f: function(weapon, monster) {
-    
-    weapon.kill();
-    monster.blood--;
-    if(monster.type=="snow")
-    {
-      monster.notattacked = 0;
-    }
-    if(monster.blood<=0)
-    {
-      this.monsterDie(monster.x, monster.y, monster.type);
-      Client.killEnemy(monster.id);
-    }
-    else Client.moveEnemy(monster.id, monster.x, monster.y, monster.blood/*, monster.animations.currentAnim.name, monster.facing*/);
-  },
-  
-  monsterDie: function(x, y, type)
-  {
-    var left, i, radian=0;
-    switch(type)
-    {
-      case "forest":
-        left = this.stones.getFirstExists(false);
-      break;
-      case "snow" :
-        left = this.bones.getFirstExists(false);
-    }
-    for(i=0;i<3;i++)
-    {
-      //stone = this.stones.getFirstExists(false);
-      radian = 120*3.14*i/180;
-      if(left)
-      {
-        left.reset(x+15*Math.cos(radian), y+15*Math.sin(radian));
-      }
-    }
-
-  },
   growElement: function()
-  {
-    
-  },
-  pickUp: function(player, item) {
-    item.kill();
-    var num_w = document.getElementById("wood");
-    num_w.innerHTML = Number(num_w.innerHTML)+1;
-    saveState();
-  },
-  hurt: function(player, bul) {
-    this.player.health --;
-    this.hp.innerHTML = this.player.health;
-    bul.kill();
-    console.log(bul.id);
-    Client.killBullet(bul.id, "hit");
-    if(this.player.health < 1){
-      this.hp.innerHTML = 20;
-      this.dead();
+  {    
+    console.log("grow");
+    var grow, i, radian=0, posx, posy;
+    var xs = [0, 1];
+    var ys = [0, 0.5, 1];
+    this.growTime++;
+    // console.log("growTime = "+this.growTime);
+    var woodPos = [{x: 307, y: 319}, {x: 631, y: 281}, {x: 425, y: 463},
+                    {x: 97, y: 591}, {x: 831, y: 503}, {x: 797, y: 479},
+                    {x: 247, y: 741}];
+    var icePos = [{x: 1317, y: 295}, {x: 1477, y: 479}, {x: 1663, y: 655},
+                    {x: 1835, y: 615}, {x: 1219, y: 559}, {x: 1667, y: 659},
+                    {x: 1895, y: 797}];
+    var caterPos = [{x: 1065, y: 711}, {x: 601, y: 923}, {x: 925, y: 851},
+                    {x: 1425, y: 911}, {x: 979, y: 1031}, {x: 1441, y: 1107},
+                    {x: 659, y: 1191}, {x: 995, y: 1231}];                
+    var coalPos = [{x: 1743, y: 1055}, {x: 1813, y: 1211}, {x: 1471, y: 1397},
+                    {x: 1905, y: 1347}, {x: 1651, y: 1469}, {x: 1917, y: 1557}];
+                   
+    var shellPos = [{x: 547, y: 1693}, {x: 845, y: 1591}, {x: 1119, y: 1623},
+                    {x: 1344, y: 1578}, {x: 1663, y: 1705}, {x: 963, y: 1757}];
+                                                          
+    for(var j=0;j<5;j++)
+    { 
+      switch(j)
+      {
+        case 0:
+          grow = this.woods.getFirstExists(false);
+          posx = woodPos[this.growTime%(woodPos.length)].x;
+          posy = woodPos[this.growTime%(woodPos.length)].y;
+          break;
+        case 1:
+          grow = this.ices.getFirstExists(false);
+          posx = icePos[this.growTime%(icePos.length)].x;
+          posy = icePos[this.growTime%(icePos.length)].y;
+          break;
+        case 2: 
+          grow = this.coals.getFirstExists(false);
+          posx = coalPos[this.growTime%(coalPos.length)].x;
+          posy = coalPos[this.growTime%(coalPos.length)].y;
+          break;
+        case 3:
+          grow = this.shells.getFirstExists(false);
+          posx = shellPos[this.growTime%(shellPos.length)].x;
+          posy = shellPos[this.growTime%(shellPos.length)].y;
+          break;
+        case 4:
+          grow = this.caterpillars.getFirstExists(false);
+          posx = caterPos[this.growTime%(caterPos.length)].x;
+          posy = caterPos[this.growTime%(caterPos.length)].y;
+        break;
+      }
+      for(var i=0;i<3;i++)
+      {
+        radian = 120*3.14*i/180;
+        if(grow)
+        {
+          
+          grow.reset(posx + 30*Math.cos(radian), posy + 30*Math.sin(radian));
+          // console.log("x = " + posx);
+          // console.log("y = " + posy);
+        }
+        // else
+        // {
+        //   i--;
+        // }
+      }
+
     }
-    saveState();
   },
-  dead: function() {
-    this.playing = 0;
-    var gg = game.add.sprite(this.player.x, this.player.y, 'gg');
-    gg.anchor.setTo(0.5, 0.5); 
-    var info = document.getElementById("info");
-    info.style.display = "none"; 
-    this.player.kill();
-    Client.socket.close();
-    game.time.events.add(1000, function() {game.state.start('home');}, this);
-  },
+
+  /* State transitions */
   toMap: function() {
     var bag = document.getElementById("bag");
     bag.style.display = "none";
-    var info = document.getElementById("info");
-    info.style.display = "none";  
     Client.socket.close();
     game.state.start('map'); 
   },
   toHome: function() {
     var bag = document.getElementById("bag");
     bag.style.display = "none"; 
-    var info = document.getElementById("info");
-    info.style.display = "none"; 
     Client.socket.close();
     game.state.start('home');  
   },
@@ -516,129 +432,19 @@ var fieldState = {
     if(bag.style.display == "none"){
       bag.style.display = "block"; 
     }else{
-      saveState();
       bag.style.display = "none";
     }
   },
-  generateEnemy: function() {
-    Client.generateEnemy(game.rnd.pick([0, 1])*this.borderH, game.rnd.pick([0, 1])*this.borderV, "forest", 3);
-  },
-  generateEnemy2: function() {
-      Client.generateEnemy(game.rnd.pick([0, 1])*this.borderH, game.rnd.pick([0, 1])*game.height, "snow", 3);
-  },
-  enemyAlive:function()
-  {
-      livingEnemies1 = [];
-      livingEnemies2 = [];
-      this.monsters.forEachAlive(function(enemy){
-        //if(enemy.body.y < game.height)
-          livingEnemies1.push(enemy);
-        //console.log(game.width);
-      });
-      this.monsters2.forEachAlive(function(enemy){
-        //if(enemy.body.y < game.height)
-          livingEnemies2.push(enemy);
-        //console.log(game.width);
-      });
-  },
-  moveEnemy:function()
-  {
+  openStore: function() {
+    var bag = document.getElementById("bag");
+    bag.style.display = "block"; 
+    bag.style.left = "calc(50% - 205px)";
+    var store = document.getElementById("store");
+    store.style.display = "block"; 
+    var x = document.getElementsByClassName("sale");
     var i;
-    for(i=0;i<livingEnemies1.length;i++)
-    {
-      if((this.distance(this.player, livingEnemies1[i])<300) && (this.distance(this.player, livingEnemies1[i])>150))
-      {
-        //console.log(this.distance(livingEnemies1[i]));
-        var dx = this.player.x-livingEnemies1[i].body.x;
-        var dy = this.player.y-livingEnemies1[i].body.y;
-        dx = dx/Math.abs(dx);
-        dy = dy/Math.abs(dy);
-        livingEnemies1[i].body.velocity.x = dx*100;
-        livingEnemies1[i].body.velocity.y = dy*100;
-        Client.moveEnemy(livingEnemies1[i].id, livingEnemies1[i].x, livingEnemies1[i].y, livingEnemies1[i].blood/*, livingEnemies1[i].animations.currentAnim.name, livingEnemies1[i].facing*/);
-      }
-      else
-      {
-        livingEnemies1[i].body.velocity.x = 0;
-        livingEnemies1[i].body.velocity.y = 0;
-      }
+    for (i = 0; i < x.length; i++) {
+      x[i].style.display = "inline";
     }
-    for(i=0;i<livingEnemies2.length;i++)
-    {
-      if((this.distance(this.player, livingEnemies2[i])<300) && (this.distance(this.player, livingEnemies2[i])>150) && livingEnemies2[i].notattacked!=5)
-      {
-        var dx = this.player.x-livingEnemies2[i].body.x;
-        var dy = this.player.y-livingEnemies2[i].body.y;
-        dx = dx/Math.abs(dx);
-        dy = dy/Math.abs(dy);
-        livingEnemies2[i].body.velocity.x = dx*150;
-        livingEnemies2[i].body.velocity.y = dy*150;
-        Client.moveEnemy(livingEnemies2[i].id, livingEnemies2[i].x, livingEnemies2[i].y, livingEnemies2[i].blood/*, livingEnemies1[i].animations.currentAnim.name, livingEnemies1[i].facing*/);
-      }
-      else
-      {
-        livingEnemies2[i].body.velocity.x = 0;
-        livingEnemies2[i].body.velocity.y = 0;
-        //console.log(livingEnemies2[i].notattacked);
-      }
-    }
-  },
-  enemy1Shoot:function()
-  {
-    var delayTime = 0;
-    if(livingEnemies1.length > 0) {
-      livingEnemies1.forEach(function(shooter) {
-        game.time.events.add(delayTime, function() {
-          if(shooter.alive) fieldState.detectPlayer(shooter, 300, "forest");
-        }, this);
-        delayTime += 750;
-      });
-    }
-  },
-  enemy2Shoot:function()
-  {
-    var delayTime = 0;
-    if(livingEnemies2.length > 0) {
-      livingEnemies2.forEach(function(shooter) {
-        game.time.events.add(delayTime, function() {
-          if(shooter.alive) fieldState.detectPlayer(shooter, 300, "snow");
-        }, this);
-        delayTime += 750;
-      });
-    }
-  },
-  detectPlayer: function(shooter, range, type) {
-    /* Pick a target randomly from whom in range */
-    var playersInRange = [];
-    if(this.distance(this.player, shooter)<range) playersInRange.push(this.player);
-    for(var i=0; i<this.playersList.length; i++) {
-      if(this.playersList[i] &&　this.distance(this.playersList[i], shooter)<range) {
-        playersInRange.push(this.playersList[i]);
-        console.log("inrange", shooter.id, i);
-      }
-    }
-    if(playersInRange.length > 0) {
-      var random = this.rnd.integerInRange(0, playersInRange.length - 1);
-      var target = playersInRange[random];
-      var dx = target.x-shooter.body.x;
-      var dy = target.y-shooter.body.y;
-      dx = dx/this.distance(target, shooter);
-      dy = dy/this.distance(target, shooter);
-      console.log("shoot", shooter.id, shooter.x, shooter.y, dx*200, dy*200, type);
-      Client.generateBullet(shooter.x, shooter.y, dx*200, dy*200, type);
-    }
-  },
-  distance: function(target, shooter)
-  {
-    if(shooter)
-    {
-      var dx = shooter.body.x - target.x;
-      var dy = shooter.body.y - target.y;
-      return Math.sqrt(dx*dx+dy*dy);
-    }
-    else
-    {
-      return 800;
-    }
-  },
+  }
 }; 

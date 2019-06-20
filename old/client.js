@@ -12,47 +12,42 @@ Client.initState = function(state) {
     if(Client.socket.disconnected) Client.socket.connect();
     Client.gameState = state;
     Client.socket.emit('init', state);
-    console.log('init', state);
 }
 
 Client.movePlayer = function(x, y, animation, facing) {
     Client.socket.emit('movePlayer', {x: x, y: y, animation: animation, facing: facing});
 }
 
-Client.generateEnemy = function(id, x, y, type, blood) {
-    Client.socket.emit('generateEnemy',  {id: id, x: x, y: y, type: type, blood: blood});
+Client.generateEnemy = function(x, y, type, blood) {
+    console.log(x, y, type, blood);
+    Client.socket.emit('generateEnemy', {x: x, y: y, blood: blood, type: type});
 }
 
 Client.moveEnemy = function(id, x, y, blood/*, animation, facing*/) {
     Client.socket.emit('moveEnemy', {id: id, x: x, y: y, blood: blood/*, animation: animation, facing: facing*/});
-    console.log('moveEnemy', {id: id, x: x, y: y, blood: blood/*, animation: animation, facing: facing*/});
 }
 
 Client.killEnemy = function(id) {
     Client.socket.emit('killEnemy', id);
-    console.log('killEnemy', id);
 }
 
 Client.generateBullet = function(x, y, velocityX, velocityY, type) {
     console.log("generateBullet");
     Client.socket.emit('generateBullet', {x: x, y: y, velocityX: velocityX, velocityY: velocityY, type: type});
-    console.log('generateBullet', {x: x, y: y, velocityX: velocityX, velocityY: velocityY, type: type});
 }
 
 Client.killBullet = function(id, reason) {
     if(reason =="hit") Client.socket.emit('killBullet', id);
     else if(reason=="OutOfBounds") Client.socket.emit('outOfBoundsKillBullet', id);
-    console.log("killBullet:", reason);
+    //console.log("killBullet:", reason);
 }
 
 Client.attack = function(weapon) {
     Client.socket.emit(weapon);
-    console.log(weapon);
 }
 
 Client.sendTest = function() {
     Client.socket.emit('test');
-    console.log('test');
 };
 
 Client.socket.on('getconnected', function(data) {
@@ -71,7 +66,6 @@ Client.socket.on('playerId', function(id) {
 Client.socket.on('newplayer', function(data) {
     if(Client.gameState == 'field')
         fieldState.addNewPlayer(data.id, data.x, data.y, data.skin);
-    console.log(data.id, data.x, data.y, data.skin);
 });
 
 Client.socket.on('allplayers', function(data) {
@@ -105,14 +99,14 @@ Client.socket.on('allEnemies', function(data) {
     if(Client.gameState == 'field') {
         for (var i = 0; i < data.length; i++) 
             if(data[i].isAlive)
-                fieldState.addEnemy(data[i].id, data[i].x, data[i].y, data[i].blood/*, data.animation, data.facing*/);
+                fieldState.addEnemy(data[i].id, data[i].x, data[i].y, data[i].type, data[i].blood/*, data.animation, data.facing*/);
     }
 });
 
 Client.socket.on('addEnemy', function(data) {
     console.log(data);
     if(Client.gameState == 'field')
-        fieldState.addEnemy(data.id, data.x, data.y, data.blood);
+        fieldState.addEnemy(data.id, data.x, data.y, data.type, data.blood);
 });
 
 Client.socket.on('updateEnemy', function(data) {

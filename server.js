@@ -20,7 +20,7 @@ app.get('/game.html', function(req, res) {
 });*/
 
 server.firstSocketID = 0;
-server.lastPlayderID = 0;
+server.lastSessionID = 0;
 server.enemies = [];
 server.bullets = [];
 
@@ -44,7 +44,7 @@ io.on('connection', function(socket) {
 
         if(state == 'field') {
             socket.player = {
-                id: server.lastPlayderID++,
+                id: server.lastSessionID++,
                 x: randomInt(100, 700),
                 y: randomInt(100, 500),
                 skin: 1,
@@ -100,7 +100,7 @@ io.on('connection', function(socket) {
             targetEnemy.blood = data.blood;
             /*targetEnemy.animation = data.animation;
             targetEnemy.facing = data.facing;*/
-            socket.broadcast.emit('updateEnemy', data);
+            io.emit('updateEnemy', data);
         });
 
         socket.on('killEnemy', function(id) {
@@ -140,25 +140,17 @@ function setFirstSocket(id) {
     console.log("firstSocket", id);
     // Add eventListener
     firstSocket.on('generateEnemy', function(data) {
-        var lastEnemyID;
-        // Find first dead
-        for(lastEnemyID=0; lastEnemyID<server.enemies.length; lastEnemyID++) {
-            if(server.enemies[lastEnemyID].isAlive == false) break;
-        }
-        console.log('lastid', lastEnemyID);
-        if(lastEnemyID < 30) {
-            lastEnemy = server.enemies[lastEnemyID] = {
-                id: lastEnemyID,
-                x: data.x,
-                y: data.y,
-                type: data.type,
-                blood: data.blood, 
-                /*animation: null,
-                facing: 0,*/
-                isAlive: true
-            };
-            io.emit('addEnemy', server.enemies[lastEnemyID]);
-        }
+        server.enemies[data.id] = {
+            id: data.id,
+            x: data.x,
+            y: data.y,
+            type: data.type,
+            blood: data.blood, 
+            /*animation: null,
+            facing: 0,*/
+            isAlive: true
+        };
+        io.emit('addEnemy', server.enemies[data.id]);
     });
 
     firstSocket.on('generateBullet', function(data) {

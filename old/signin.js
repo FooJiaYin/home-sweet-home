@@ -102,11 +102,9 @@ function initApp() {
             var errorMessage= error.message;
             txtEmail.value = "";
             txtPassword.value = "";
-        }).then(
-            firebase.auth().signInWithEmailAndPassword(email, password)
-        ).then(function() {
+        }).then(function() {
             console.log("init");
-            initValues();
+            initValues(uid);
         });
         ///         2. Show success message by "create_alert" and clean input field
         ///         3. Show error message by "create_alert" and clean input field

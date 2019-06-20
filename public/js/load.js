@@ -14,40 +14,40 @@ var loadState = {
     game.load.image('field', 'assets/field.png');
     game.load.image('field_s', 'assets/field_s.png');
     game.load.spritesheet('player', 'assets/player.png', 80, 80);
-    game.load.spritesheet('sword', 'assets/sword.png', 32, 32);
-    game.load.spritesheet('arrow', 'assets/arrow.png', 32, 32);
+    game.load.spritesheet('sword', 'assets/weapon/sword.png', 32, 32);
+    game.load.spritesheet('arrow', 'assets/weapon/arrow.png', 32, 32);
+    game.load.image('store', 'assets/store.png');
     game.load.image('gg', 'assets/gg.png');
-    game.load.image('monster', 'assets/monster.png');
-    game.load.image('monster2', 'assets/whitewalker.png');
-    game.load.image('twig', 'assets/twig.png');
-    game.load.image('barbarian', 'assets/barbarian.png');
+
+    ///monsters
+    game.load.image('stoneman', 'assets/enemy/stoneman.png');
+    game.load.image('fish', 'assets/enemy/magikarp.png');
+    game.load.image('whitewalker', 'assets/enemy/whitewalker.png');
+    game.load.image('twig', 'assets/enemy/twig.png');
+    game.load.image('barbarian', 'assets/enemy/barbarian.png');
+
+    //short attack
+    game.load.image('attackcircle', 'assets/enemy/circle_s.png');
 
     //grow
-    game.load.image('stone', 'assets/stone.png');
-    game.load.image('ice', 'assets/ice.png');
-    game.load.image('coal', 'assets/ice.png');
-    game.load.image('shell', 'assets/shell.png');
+    game.load.image('stone', 'assets/drops/stone.png');
+    game.load.image('ice', 'assets/drops/ice.png');
+    game.load.image('coal', 'assets/drops/coal.png');
+    game.load.image('shell', 'assets/drops/shell.png');
+    game.load.image('caterpillar', 'assets/drops/caterpillar.png')
+
+    ////left//left is same to bullet
+    game.load.image('snowleft', 'assets/drops/skull.png');
+    game.load.image('mineleft', 'assets/drops/cutton.png');
+    game.load.image('grassleft', 'assets/drops/meat.png');
+    game.load.image('forestleft', 'assets/drops/leaf.png');
+    game.load.image('beachleft', 'assets/drops/weed.png');
     
-
-
-
-    ////left
-    game.load.image('bone', 'assets/bone.png');
-    game.load.image('fur', 'assets/fur.png');
-    game.load.image('meat', 'assets/meat.png');
-    game.load.image('weed', 'assets/weed.png');
-
-
-
-    
-    game.load.image('enemyBullet2', 'assets/skull.png');
-    game.load.image('enemyBullet', 'assets/pupu.png');
-    game.load.image('leaf', 'assets/leaf.png');
     game.load.image('wood', 'assets/wood.png');
-
-    game.load.image('trash', 'assets/trash.png');
-    game.load.image('table', 'assets/table.png');
-    game.load.image('chair', 'assets/chair.png');
+    ///furn
+    game.load.image('packing', 'assets/packing.png');
+    game.load.image('table', 'assets/furniture/table.png');
+    game.load.image('chair', 'assets/furniture/chair.png');
   }, 
   create: function() { 
     game.state.start('home'); 

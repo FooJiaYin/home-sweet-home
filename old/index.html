@@ -7,7 +7,7 @@
     <meta name="description" content="">
     <meta name="author" content="">
 
-    <title>Home Sweet Home</title>
+    <title>Signin Page</title>
 
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
     <link href="css/signin.css" rel="stylesheet">
@@ -30,29 +30,21 @@
     <script type="text/javascript" src="js/map.js"></script> 
     <script type="text/javascript" src="js/home.js"></script> 
     <script type="text/javascript" src="js/field.js"></script>  
-    <script type="text/javascript" src="js/player.js"></script>  
-    <script type="text/javascript" src="js/enemy.js"></script>  
     <script type="text/javascript" src="js/game.js"></script> 
     <style>
       #canvas{
+        display: none;
         margin-left: calc(50% - 400px);
-        display:none;
+      }
+      #info{
+        left: calc(50% + 300px);
+        top: 0;
+        font-size: 30px;
+        display: none;
+        position: absolute;
       }
       #bag{
         left: calc(50% - 100px);
-        top: 150px;
-        width: 200px;
-        height: 300px;
-        display: none;
-        position: absolute;
-        background: #999999;
-        padding-top: 1px;
-        padding-left: 5px;
-        overflow-x: hidden;
-        overflow-y: scroll;
-      }
-      #store{
-        left: 50%;
         top: 150px;
         width: 200px;
         height: 300px;
@@ -90,9 +82,6 @@
         overflow-x: hidden;
         overflow-y: scroll;
       }
-      .sale {
-        display: none;
-      }
     </style>
   </head>
 
@@ -119,106 +108,47 @@
     </div>
 
     <div id='canvas'></div>
-    <div id='ui'></div>
-      <div id='bag'>
-        <span style="font-size: 25px;">背包</span>
-        <p id="sword_w_b" style="display: block;">
-          <span><input type="button" id="sword_w" value="裝備" onclick="use('sword_w')" disabled>&nbsp;木劍</span>
-        </p>
-        <p id="sword_i_b" style="display: none;">
-          <span><input type="button" id="sword_i" value="裝備" onclick="use('sword_i')">&nbsp;鐵劍</span>
-        </p>
-        <p id="sword_d_b" style="display: none;">
-          <span><input type="button" id="sword_d" value="裝備" onclick="use('sword_d')">&nbsp;鑽劍</span>
-        </p>
+      <div id='info'>
         <p>
-          <span><input type="button" value="使用" onclick="heal('meat')"></span>
-          獸肉 x <span id="meat">10</span>&nbsp;<span class="sale" id="meats">-0</span>
-        </p>
-        <p>
-          <span><input type="button" value="使用" onclick="heal('potion')"></span>
-          藥水 x <span id="potion">10</span>&nbsp;<span class="sale" id="potions">-0</span>
-        </p>
-        <p>
-          <span><input type="button" value="升級" onclick="up('wood','wood2')"></span>
-          木頭 x <span id="wood">10</span>&nbsp;<span class="sale" id="woods">-0</span>
-        </p>
-        <p>
-          <span><input type="button" value="升級" onclick="up('wood2','wood3')"></span>
-          普通木材 x <span id="wood2">10</span>&nbsp;<span class="sale" id="wood2s">-0</span>
-        </p>
-        <p>
-          <span><input type="button" value="升級" disabled></span>
-          高級木材 x <span id="wood3">10</span>&nbsp;<span class="sale" id="wood3s">-0</span>
-        </p>
-        <p>
-          <span><input type="button" value="升級" onclick="up('wood','wood2')"></span>
-          石頭 x <span id="stone">10</span>&nbsp;<span class="sale" id="stones">-0</span>
-        </p>
-        <p>
-          <span><input type="button" value="升級" onclick="up('wood2','wood3')"></span>
-          普通石材 x <span id="stone2">10</span>&nbsp;<span class="sale" id="stone2s">-0</span>
-        </p>
-        <p>
-          <span><input type="button" value="升級" disabled></span>
-          高級石材 x <span id="stone3">10</span>&nbsp;<span class="sale" id="stone3s">-0</span>
-        </p>
-        <p>
-          <span><input type="button" value="升級" onclick="up('bone','bone2')"></span>
-          骨頭 x <span id="bone">10</span>&nbsp;<span class="sale" id="bones">-0</span>
-        </p>
-        <p>
-          <span><input type="button" value="升級" onclick="up('bone2','bone3')"></span>
-          普通骨頭 x <span id="bone2">10</span>&nbsp;<span class="sale" id="bone2s">-0</span>
-        </p>
-        <p>
-          <span><input type="button" value="升級" disabled></span>
-          高級骨頭 x <span id="bone3">10</span>&nbsp;<span class="sale" id="bone3s">-0</span>
+          LV :<span id="lv">1</span></br>
+          HP:<span id="hp">20</span>
         </p>
       </div>
-      <div id='store'>
-        <span style="font-size: 25px;">商店
-          <input type="button" value="x" onclick="closeStore()" style="margin-left: 90px;">
-        </span>
+      <div id='bag'>
+        <span style="font-size: 25px;">背包</span>
         <p>
-          <span><input type="button" value="購買" onclick="buy('sword_w')"></span>&nbsp;木劍
+          <span><input type="button" value="升級" onclick="up('wood','wood2')"></span>
+          木頭 x <span id="wood">0</span>
         </p>
         <p>
-          <span><input type="button" value="購買" onclick="buy('sword_i_b')"></span>&nbsp;鐵劍
+          <span><input type="button" value="升級" onclick="up('wood2','wood3')"></span>
+          普通木材 x <span id="wood2">0</span>
         </p>
         <p>
-          <span><input type="button" value="購買" onclick="buy('sword_d_b')"></span>&nbsp;鑽劍
-        </p>
+          <span><input type="button" value="升級" disabled></span>
+          高級木材 x <span id="wood3">0</span></p>
+        <p>石頭 x <span id="stone">0</span></p>
+        <p>骨頭 x <span id="bone">0</span></p>
       </div>
       <div id='sto'>
         <span style="font-size: 25px;">倉庫</span>
-        <p id="table_bk">
-          <img src="assets/furniture/table_i.png" style="float: left; margin: 5px;">
-          &nbsp;&nbsp;&nbsp;x <span id="table">3</span></br>
-          <span>
-            <input type="button" value="擺放" onclick="place('table')"></br>
-            <input type="button" value="分解" onclick="separ(0)">
-          </span>
-        </p>
-        <p id="chair_bk">
-            <img src="assets/furniture/chair_i.png" style="float: left; margin: 5px;">
-            &nbsp;&nbsp;&nbsp;x <span id="chair">3</span></br>
-            <span>
-              <input type="button" value="擺放" onclick="place('chair')"></br>
-              <input type="button" value="分解" onclick="separ(1)">
-            </span>
-        </p>
+        <p>
+          <span><input type="button" value="擺放" onclick="place('table')"></span>
+          桌子 x <span id="table">3</span></p>
+        <p>
+          <span><input type="button" value="擺放" onclick="place('chair')"></span>
+          椅子 x <span id="chair">2</span></p>
       </div>
       <div id='craft'>
           <span style="font-size: 25px;">合成</span>
           <p>
-            <span><input type="button" value="製作" onclick="craft(0)"></span>
+            <span><input type="button" value="製作" onclick="craft('table','wood3',1)"></span>
             桌子 </br>(高級木材 x1)
           </p>
           <p>
-            <span><input type="button" value="製作" onclick="craft(1)"></span>
+            <span><input type="button" value="製作" onclick="craft('chair','wood2',2)"></span>
             椅子 </br>(普通木材 x2)</p>
       </div>
-    </div>
-  </body>
+    </body>  
+    </body>
 </html>  
