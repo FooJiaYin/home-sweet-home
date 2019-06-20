@@ -299,7 +299,7 @@ var fieldState = {
 
     //loop
     game.time.events.loop(200, this.moveEnemy, this);
-    //game.time.events.loop(50, this.enemyAttack, this);
+    game.time.events.loop(50, this.enemyAttack, this);
     game.time.events.loop(1000, this.enemyShoot, this);
     game.time.events.loop(16000, this.generateEnemy, this);
     game.time.events.loop(2000, this.growElement, this);
@@ -333,6 +333,9 @@ var fieldState = {
       game.physics.arcade.overlap(this.player, this.woods, this.pickUp, null, this);
       game.physics.arcade.overlap(this.player, this.forestBullets, this.hurt, null, this);
       game.physics.arcade.overlap(this.player, this.snowBullets, this.hurt, null, this);
+      game.physics.arcade.overlap(this.player, this.grassBullets, this.hurt, null, this);
+      game.physics.arcade.overlap(this.player, this.mineBullets, this.hurt, null, this);
+      game.physics.arcade.overlap(this.player, this.beachBullets, this.hurt, null, this);
     }
   },
 

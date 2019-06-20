@@ -80,47 +80,31 @@ fieldState.moveEnemy = function () {
 }
 
 /* Control attack action */
-/*
+
 fieldState.enemyAttack = function () {
-    var monsters;
-    for (var j = 0; j < 3; j++) {
-        switch (j) {
-            case 0:
-                monsters = livingForest;
-                break;
-            case 1:
-                monsters = livingGrass;
-                break;
-            case 2:
-                monsters = livingBeach;
-                break;
-        }
-
-        if (monsters) {
-            for (var i = 0; i < monsters.length; i++) {
-                if (this.distance(monsters[i]) < 150 && monsters[i].attack == 0) {
-                    monsters[i].attack = 1;
-                    var local_circle = this.circles.getFirstDead(false);
-                    local_circle.reset(monsters[i].x, monsters[i].y);
-                    monsters.circle = local_circle;
-                    console.log('p');
-                    game.time.events.add(800, function () {
-                        local_circle.kill();
-                        //monsters[i].attack = 0;
-                    }, this);
-
-                }
-                else if (this.distance(monsters[i]) > 150) {
-                    monsters[i].attack = 0;
-                    console.log('d:' + this.distance(monsters[i]));
-                }
-                else {
-                    console.log("dist = " + this.distance(monsters[i]));
-                }
+    if (this.enemies) {
+        for (var i = 0; i < this.enemies.length; i++) {
+            if (this.distance(this.enemies[i]) < 150 && this.enemies[i].attack == 0) {
+                this.enemies[i].attack = 1;
+                var local_circle = this.circles.getFirstDead(false);
+                local_circle.reset(this.enemies[i].x, this.enemies[i].y);
+                this.enemies.circle = local_circle;
+                console.log('p');
+                game.time.events.add(800, function () {
+                    local_circle.kill();
+                    //this.enemies[i].attack = 0;
+                }, this);
+            }
+            else if (this.distance(this.enemies[i]) > 150) {
+                this.enemies[i].attack = 0;
+                console.log('d:' + this.distance(this.enemies[i]));
+            }
+            else {
+                console.log("dist = " + this.distance(this.enemies[i]));
             }
         }
     }
-}*/
+}
 
 // phaser >> server
 fieldState.enemyShoot = function () {

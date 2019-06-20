@@ -35,6 +35,8 @@ fieldState.updatePlayer = function (id, x, y, animation, facing) {
 fieldState.removePlayer = function (id) {
     this.playerMap[id].destroy();
     delete this.playerMap[id];
+    var gg = game.add.sprite(this.playerMap[id].x, this.playerMap[id].y, 'gg');
+    game.time.events.add(1000, function () { gg.destroy(); }, this);
 }
 
 /* Action control: phaser input >> server */
