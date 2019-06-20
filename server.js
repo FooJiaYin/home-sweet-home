@@ -100,12 +100,12 @@ io.on('connection', function(socket) {
             targetEnemy.blood = data.blood;
             /*targetEnemy.animation = data.animation;
             targetEnemy.facing = data.facing;*/
-            io.emit('updateEnemy', data);
+            socket.broadcast.emit('updateEnemy', data);
         });
 
         socket.on('killEnemy', function(id) {
             server.enemies[id].isAlive = false;
-            io.emit('removeEnemy', id);
+            socket.broadcast.emit('removeEnemy', id);
         });
 
         socket.on('killBullet', function(id) {

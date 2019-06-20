@@ -147,7 +147,7 @@ var fieldState = {
     }, this);
     this.cursor = game.input.keyboard.createCursorKeys();
 
-    this.life = game.add.text(700, 20, 'HP:20', { font: '30px Arial'} );
+    this.life = game.add.text(700, 20, 'HP: ' + game.global.hp, { font: '30px Arial'} );
     this.life.fixedToCamera = true;
     this.map = game.add.text(700, 400, '地圖', { font: '40px Microsoft JhengHei', backgroundColor: 'white'});
     this.map.inputEnabled = true;
@@ -301,8 +301,7 @@ var fieldState = {
     game.time.events.loop(200, this.moveEnemy, this);
     //game.time.events.loop(50, this.enemyAttack, this);
     game.time.events.loop(1000, this.enemyShoot, this);
-    //game.time.events.loop(16000, this.generateEnemy, this);
-    game.time.events.loop(1000, this.generateEnemy, this);
+    game.time.events.loop(16000, this.generateEnemy, this);
     game.time.events.loop(2000, this.growElement, this);
 
   }, 

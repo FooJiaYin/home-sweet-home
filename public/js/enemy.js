@@ -69,6 +69,7 @@ fieldState.moveEnemy = function () {
             dy = dy / Math.abs(dy);
             this.enemies[i].body.velocity.x = dx * 100;
             this.enemies[i].body.velocity.y = dy * 100;
+            this.updateEnemy(this.enemies[i].id, this.enemies[i].x, this.enemies[i].y, this.enemies[i].blood/*, this.enemies1[i].animations.currentAnim.name, this.enemies1[i].facing*/);
             Client.moveEnemy(this.enemies[i].id, this.enemies[i].x, this.enemies[i].y, this.enemies[i].blood/*, this.enemies1[i].animations.currentAnim.name, this.enemies1[i].facing*/);
         }
         else if(this.enemies[i]) {
@@ -224,6 +225,7 @@ fieldState.attack_f = function (weapon, monster) {
     }
     if (monster.blood <= 0) {
         this.monsterDie(monster.x, monster.y, monster.type);
+        this.removeEnemy(monster.id);
         Client.killEnemy(monster.id);
     }
     else Client.moveEnemy(monster.id, monster.x, monster.y, monster.blood/*, monster.animations.currentAnim.name, monster.facing*/);
