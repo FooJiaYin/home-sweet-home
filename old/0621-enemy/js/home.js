@@ -1,12 +1,7 @@
 var homeState = { 
   create: function() {
-    if(game.global.hp < 1) {
-      game.global.hp = 20;
-      saveState();
-    }
-    loadValues();
     game.world.setBounds(0, 0, 800, 600);
-
+    this.bg = game.add.tileSprite(0, 0, game.width, game.height, 'home');
     var sto = document.getElementById("sto");
     sto.style.display = "none";
     var bag = document.getElementById("bag");
@@ -14,37 +9,15 @@ var homeState = {
     bag.style.left = "calc(50% - 205px)";
     this.decorating = 0;
 
-    this.bg = game.add.tileSprite(0, 0, game.width, game.height, 'home');
-    this.packing = game.add.sprite(10, 10, 'packing');
-    this.packing.visible = false;
-
     game.items = game.add.group();
     game.items.enableBody = true;
-
-    firebase.database().ref('profile/' + userId + '/home/furniture').once('value', function(snapshot) {
-      console.log("load furniture");
-      var i = 0;
-      snapshot.forEach(function(childSnapshot) {
-        game.global.furn[i] = {
-          x: childSnapshot.val().x,
-          y: childSnapshot.val().y,
-          type: childSnapshot.val().type
-        };
-        i++;
-      });
-      //game.global.furn = snapshot.val();
-      console.log(game.global.furn);
-    }).then(function() {
-      console.log("put furniture");
-      for (var i = 0; i < game.global.furn.length; i++){
-        x = game.items.create(game.global.furn[i].x, game.global.furn[i].y, game.global.furn[i].type);
-        x.type = game.global.furn[i].type;
-        game.physics.arcade.enable(x);
-      }
-      game.items.forEach(function(i) {
-        i.anchor.setTo(0, 1);
-      }, this);
-    });
+    for (var i = 0; i < game.global.furn.length; i++){
+      x = game.items.create(game.global.furn[i].x, game.global.furn[i].y, game.global.furn[i].type);
+      x.type = game.global.furn[i].type;
+    }
+    game.items.forEach(function(i) {
+      i.anchor.setTo(0.5, 1);
+    }, this);
 
     this.player = game.items.create(400, 460, 'player');
     this.player.anchor.setTo(0.5, 1); 
@@ -59,7 +32,8 @@ var homeState = {
 
     this.cursor = game.input.keyboard.createCursorKeys();
 
-    this.life = game.add.text(700, 20, 'HP:20', { font: '30px Arial'} );
+    this.trash = game.add.sprite(10, 10, 'trash');
+    this.trash.visible = false;
     this.field = game.add.text(700, 340, '冒險', { font: '40px Microsoft JhengHei', backgroundColor: 'white'});
     this.field.inputEnabled = true;
     this.field.events.onInputDown.add(this.toField, this);
@@ -75,42 +49,26 @@ var homeState = {
   }, 
   update: function() {
     if(this.decorating==0) this.movePlayer();
-    this.updateText();
-    game.physics.arcade.overlap(this.packing, game.items, this.store, null, this);
+    game.physics.arcade.overlap(this.trash, game.items, this.store, null, this);
     game.items.sort('y', Phaser.Group.SORT_ASCENDING);
   },
   movePlayer: function() {  
-    if (this.cursor.left.isDown&&this.player.y>-3*this.player.x+720) {
+    if (this.cursor.left.isDown) { 
       this.player.body.velocity.x = -200;
       this.player.body.velocity.y = 0;
       this.player.facing = 1;
       this.player.animations.play('goleft');
-    }else if (this.cursor.left.isDown) { 
-      this.player.x = (720-this.player.y)/3;
-      this.player.body.velocity.x = 0;
-      this.player.body.velocity.y = 0;
-      this.player.facing = 1;
-      this.player.animations.play('goleft');
-    }else if (this.cursor.right.isDown&&this.player.y>3*this.player.x-1680) { 
+    }else if (this.cursor.right.isDown) { 
       this.player.body.velocity.x = 200;
       this.player.body.velocity.y = 0;
       this.player.facing = 2;
       this.player.animations.play('goright');
-    }else if (this.cursor.right.isDown) { 
-      this.player.x = (this.player.y+1680)/3;
-      this.player.body.velocity.x = 0;
-      this.player.body.velocity.y = 0;
-      this.player.facing = 2;
-      this.player.animations.play('goright');
-    }else if (this.cursor.up.isDown&&this.player.y>280&&this.player.y>-3*this.player.x+720&&this.player.y>3*this.player.x-1680) { 
+    }else if (this.cursor.up.isDown&&this.player.y>465) { 
       this.player.body.velocity.x = 0;
       this.player.body.velocity.y = -200;
       this.player.facing = 3;
       this.player.animations.play('gobackward');
     }else if (this.cursor.up.isDown) { 
-      if(this.player.y<=3*this.player.x-1680) this.player.y = 3*this.player.x-1680;
-      else if(this.player.y<=-3*this.player.x+720) this.player.y = -3*this.player.x+720;
-      else this.player.y = 280;      
       this.player.body.velocity.x = 0;
       this.player.body.velocity.y = 0;
       this.player.facing = 3;
@@ -120,59 +78,44 @@ var homeState = {
       this.player.body.velocity.y = 200;
       this.player.facing = 0;
       this.player.animations.play('goforward');
-    }else{
+    }else {
       this.player.body.velocity.x = 0;
       this.player.body.velocity.y = 0;
       this.player.frame = this.player.facing*4;
       this.player.animations.stop();
-    } 
+    }      
   },
-  updateText: function() {
-    this.life.setText("HP:" + game.global.hp);
-  },
-  check: async function() {
-    game.global.furn = [];
-    game.items.forEachExists(function(i) {
-      if(i.type!="player"){
-        if(i.y>280 && i.y>-3*i.x+650 && i.y>3*(i.x+game.cache.getImage(i).height)-1620){
-          i.inputEnabled = false;
-          game.global.furn.push({type:i.type, x:i.x, y:i.y});
-        }else{
-          var x = document.getElementById(i.type);
-          x.innerHTML = Number(x.innerHTML)+1;
-          i.kill();
-        }
-      }
-    }, this);
-    saveState();
-  },
-  onDragStop: function(item, pointer) {
-    if (pointer.x < 90 && pointer.y < 90){
-      var x = document.getElementById(item.type);
-      x.innerHTML = Number(x.innerHTML)+1;
-      item.kill();
-    }
+  store: function(trash, item) {
+    var x = document.getElementById(item.type);
+    x.innerHTML = Number(x.innerHTML)+1;
+    item.kill();
   },
   toMap: function() {
-    this.packing.visible = false;
+    this.trash.visible = false;
     var sto = document.getElementById("sto");
     sto.style.display = "none";
     var bag = document.getElementById("bag");
     bag.style.display = "none";
     var cra = document.getElementById("craft");
     cra.style.display = "none";
-    this.check();
+    game.global.furn = [];
+    game.items.forEach(function(i) {
+      if(i.type!="player") game.global.furn.push({type:i.type, x:i.x, y:i.y});
+    }, this);
     game.state.start('map'); 
   },
   toField: function() {
-    this.packing.visible = false;
+    this.trash.visible = false;
     var sto = document.getElementById("sto");
     sto.style.display = "none";
     var bag = document.getElementById("bag");
     bag.style.display = "none";
     var cra = document.getElementById("craft");
     cra.style.display = "none";
-    this.check();
+    game.global.furn = [];
+    game.items.forEach(function(i) {
+      if(i.type!="player") game.global.furn.push({type:i.type, x:i.x, y:i.y});
+    }, this);
     game.state.start('field');  
   },
   openStorage: function() {
@@ -180,21 +123,23 @@ var homeState = {
     if(sto.style.display == "none"){
       sto.style.display = "block"; 
       this.player.visible = false;
-      this.packing.visible = true;
+      this.trash.visible = true;
       this.decorating = 1;
-      game.items.forEachExists(function(i) {
+      game.items.forEach(function(i) {
         if(i.type!="player"){
           i.inputEnabled = true;
           i.input.enableDrag();
-          i.events.onDragStop.add(this.onDragStop, this);
         }        
       }, this);
     }else{
       sto.style.display = "none";
       this.player.visible = true;
-      this.packing.visible = false;
+      this.trash.visible = false;
       this.decorating = 0;
-      this.check();
+      game.global.furn = [];
+      game.items.forEach(function(i) {
+        if(i.type!="player") i.inputEnabled = false;
+      }, this);
     }
   },
   openCraft: function() {
@@ -206,7 +151,6 @@ var homeState = {
     }else{
       bag.style.display = "none"; 
       cra.style.display = "none"; 
-      saveState();
     }
   },
 }; 

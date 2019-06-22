@@ -98,8 +98,8 @@ io.on('connection', function(socket) {
             targetEnemy.x = data.x;
             targetEnemy.y = data.y;
             targetEnemy.blood = data.blood;
-            /*targetEnemy.animation = data.animation;
-            targetEnemy.facing = data.facing;*/
+            targetEnemy.animation = data.animation;
+            targetEnemy.frame = data.frame;
             socket.broadcast.emit('updateEnemy', data);
         });
 
@@ -146,8 +146,8 @@ function setFirstSocket(id) {
             y: data.y,
             type: data.type,
             blood: data.blood, 
-            /*animation: null,
-            facing: 0,*/
+            animation: null,
+            frame: 0,
             isAlive: true
         };
         io.emit('addEnemy', server.enemies[data.id]);
