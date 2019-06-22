@@ -1,224 +1,404 @@
 <!doctype html>
 <html lang="en">
 
-  <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <meta name="description" content="">
-    <meta name="author" content="">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta name="description" content="">
+  <meta name="author" content="">
 
-    <title>Home Sweet Home</title>
+  <title>Home Sweet Home</title>
 
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
-    <link href="css/signin.css" rel="stylesheet">
-    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
-    
-    <script src="https://www.gstatic.com/firebasejs/5.9.2/firebase.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/5.9.2/firebase-app.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/5.9.2/firebase-auth.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/5.9.2/firebase-database.js"></script> 
-    <script type="text/javascript" src="js/config.js"></script>
-    <script type="text/javascript" src="js/firebase.js"></script>
-    <script src="/socket.io/socket.io.js"></script>
-    <script type="text/javascript" src="js/signin.js"></script>
-    <script type="text/javascript" src="js/client.js"></script>
-    <script type="text/javascript" src="js/phaser.min.js"></script>
-    <script type="text/javascript" src="js/boot.js"></script> 
-    <script type="text/javascript" src="js/load.js"></script> 
-    <script type="text/javascript" src="js/map.js"></script> 
-    <script type="text/javascript" src="js/home.js"></script> 
-    <script type="text/javascript" src="js/field.js"></script>  
-    <script type="text/javascript" src="js/player.js"></script>  
-    <script type="text/javascript" src="js/enemy.js"></script>  
-    <script type="text/javascript" src="js/game.js"></script> 
-    <style>
-      #canvas{
-        margin-left: calc(50% - 400px);
-        display:none;
-      }
-      #bag{
-        left: calc(50% - 100px);
-        top: 150px;
-        width: 200px;
-        height: 300px;
-        display: none;
-        position: absolute;
-        background: #999999;
-        padding-top: 1px;
-        padding-left: 5px;
-        overflow-x: hidden;
-        overflow-y: scroll;
-      }
-      #store{
-        left: 50%;
-        top: 150px;
-        width: 200px;
-        height: 300px;
-        display: none;
-        position: absolute;
-        background: #999999;
-        padding-top: 1px;
-        padding-left: 5px;
-        overflow-x: hidden;
-        overflow-y: scroll;
-      }
-      #sto{
-        left: calc(50% + 400px);
-        top: 8px;
-        width: 150px;
-        height: 600px;
-        display: none;
-        position: absolute;
-        background: #999999;
-        padding-top: 1px;
-        padding-left: 5px;
-        overflow-x: hidden;
-        overflow-y: scroll;
-      }
-      #craft{
-        left: 50%;
-        top: 150px;
-        width: 200px;
-        height: 300px;
-        display: none;
-        position: absolute;
-        background: #999999;
-        padding-top: 1px;
-        padding-left: 5px;
-        overflow-x: hidden;
-        overflow-y: scroll;
-      }
-      .sale {
-        display: none;
-      }
-    </style>
-  </head>
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+  <link href="css/signin.css" rel="stylesheet">
+  <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
 
-  <body>
-    <div id="sign_in" class="text-center">
-      <div id="custom-alert">
-      </div>
-      <div class="form-signin">
-        <h1 class="h3 mb-3 font-weight-normal">Please sign in/register</h1>
-        <label for="inputUsername" class="sr-only">Username</label>
-        <input type="text" id="inputUsername" class="form-control" placeholder="Enter Username for new user" required>
-        <label for="inputEmail" class="sr-only">Email address</label>
-        <input type="email" id="inputEmail" class="form-control" placeholder="Email address" required autofocus>
-        <label for="inputPassword" class="sr-only">Password</label>
-        <input type="password" id="inputPassword" class="form-control" placeholder="Password" required>
-        <div class="checkbox mb-3">
-          <label>
-            <input type="checkbox" value="remember-me"> Remember me
-          </label>
-        </div>
-        <button class="btn btn-lg btn-primary btn-block" id="btnLogin">Sign in</button>
-        <button class="btn btn-lg btn-secondary btn-block" id="btnSignUp">New account</button>
-      </div>
+  <script src="https://www.gstatic.com/firebasejs/5.9.2/firebase.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/5.9.2/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/5.9.2/firebase-auth.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/5.9.2/firebase-database.js"></script>
+  <script type="text/javascript" src="js/config.js"></script>
+  <script type="text/javascript" src="js/firebase.js"></script>
+  <script src="/socket.io/socket.io.js"></script>
+  <script type="text/javascript" src="js/signin.js"></script>
+  <script type="text/javascript" src="js/client.js"></script>
+  <script type="text/javascript" src="js/phaser.min.js"></script>
+  <script type="text/javascript" src="js/boot.js"></script>
+  <script type="text/javascript" src="js/load.js"></script>
+  <script type="text/javascript" src="js/map.js"></script>
+  <script type="text/javascript" src="js/home.js"></script>
+  <script type="text/javascript" src="js/field.js"></script>
+  <script type="text/javascript" src="js/player.js"></script>
+  <script type="text/javascript" src="js/enemy.js"></script>
+  <script type="text/javascript" src="js/game.js"></script>
+  <style>
+    #canvas {
+      margin-left: calc(50% - 400px);
+      display: none;
+    }
+
+    #bag {
+      left: calc(50% - 100px);
+      top: 150px;
+      width: 200px;
+      height: 300px;
+      display: none;
+      position: absolute;
+      background: #999999;
+      padding-top: 1px;
+      padding-left: 5px;
+      overflow-x: hidden;
+      overflow-y: scroll;
+    }
+
+    #store {
+      left: 50%;
+      top: 150px;
+      width: 200px;
+      height: 300px;
+      display: none;
+      position: absolute;
+      background: #999999;
+      padding-top: 1px;
+      padding-left: 5px;
+      overflow-x: hidden;
+      overflow-y: scroll;
+    }
+
+    #sto {
+      left: calc(50% + 400px);
+      top: 8px;
+      width: 150px;
+      height: 600px;
+      display: none;
+      position: absolute;
+      background: #999999;
+      padding-top: 1px;
+      padding-left: 5px;
+      overflow-x: hidden;
+      overflow-y: scroll;
+    }
+
+    #craft {
+      left: 50%;
+      top: 150px;
+      width: 200px;
+      height: 300px;
+      display: none;
+      position: absolute;
+      background: #999999;
+      padding-top: 1px;
+      padding-left: 5px;
+      overflow-x: hidden;
+      overflow-y: scroll;
+    }
+    .sale {
+      display: none;
+    }
+    .sale_btn {
+      width: 30px;
+      display: none;
+    }
+  </style>
+</head>
+
+<body>
+  <div id="sign_in" class="text-center">
+    <div id="custom-alert">
     </div>
-
-    <div id='canvas'></div>
-    <div id='ui'></div>
-      <div id='bag'>
-        <span style="font-size: 25px;">背包</span>
-        <p id="sword_w_b" style="display: block;">
-          <span><input type="button" id="sword_w" value="裝備" onclick="use('sword_w')" disabled>&nbsp;木劍</span>
-        </p>
-        <p id="sword_i_b" style="display: none;">
-          <span><input type="button" id="sword_i" value="裝備" onclick="use('sword_i')">&nbsp;鐵劍</span>
-        </p>
-        <p id="sword_d_b" style="display: none;">
-          <span><input type="button" id="sword_d" value="裝備" onclick="use('sword_d')">&nbsp;鑽劍</span>
-        </p>
-        <p>
-          <span><input type="button" value="使用" onclick="heal('meat')"></span>
-          獸肉 x <span id="meat">10</span>&nbsp;<span class="sale" id="meats">-0</span>
-        </p>
-        <p>
-          <span><input type="button" value="使用" onclick="heal('potion')"></span>
-          藥水 x <span id="potion">10</span>&nbsp;<span class="sale" id="potions">-0</span>
-        </p>
-        <p>
-          <span><input type="button" value="升級" onclick="up('wood','wood2')"></span>
-          木頭 x <span id="wood">10</span>&nbsp;<span class="sale" id="woods">-0</span>
-        </p>
-        <p>
-          <span><input type="button" value="升級" onclick="up('wood2','wood3')"></span>
-          普通木材 x <span id="wood2">10</span>&nbsp;<span class="sale" id="wood2s">-0</span>
-        </p>
-        <p>
-          <span><input type="button" value="升級" disabled></span>
-          高級木材 x <span id="wood3">10</span>&nbsp;<span class="sale" id="wood3s">-0</span>
-        </p>
-        <p>
-          <span><input type="button" value="升級" onclick="up('wood','wood2')"></span>
-          石頭 x <span id="stone">10</span>&nbsp;<span class="sale" id="stones">-0</span>
-        </p>
-        <p>
-          <span><input type="button" value="升級" onclick="up('wood2','wood3')"></span>
-          普通石材 x <span id="stone2">10</span>&nbsp;<span class="sale" id="stone2s">-0</span>
-        </p>
-        <p>
-          <span><input type="button" value="升級" disabled></span>
-          高級石材 x <span id="stone3">10</span>&nbsp;<span class="sale" id="stone3s">-0</span>
-        </p>
-        <p>
-          <span><input type="button" value="升級" onclick="up('bone','bone2')"></span>
-          骨頭 x <span id="bone">10</span>&nbsp;<span class="sale" id="bones">-0</span>
-        </p>
-        <p>
-          <span><input type="button" value="升級" onclick="up('bone2','bone3')"></span>
-          普通骨頭 x <span id="bone2">10</span>&nbsp;<span class="sale" id="bone2s">-0</span>
-        </p>
-        <p>
-          <span><input type="button" value="升級" disabled></span>
-          高級骨頭 x <span id="bone3">10</span>&nbsp;<span class="sale" id="bone3s">-0</span>
-        </p>
+    <div class="form-signin">
+      <h1 class="h3 mb-3 font-weight-normal">Please sign in/register</h1>
+      <label for="inputUsername" class="sr-only">Username</label>
+      <input type="text" id="inputUsername" class="form-control" placeholder="Enter Username for new user" required>
+      <label for="inputEmail" class="sr-only">Email address</label>
+      <input type="email" id="inputEmail" class="form-control" placeholder="Email address" required autofocus>
+      <label for="inputPassword" class="sr-only">Password</label>
+      <input type="password" id="inputPassword" class="form-control" placeholder="Password" required>
+      <div class="checkbox mb-3">
+        <label>
+          <input type="checkbox" value="remember-me"> Remember me
+        </label>
       </div>
-      <div id='store'>
-        <span style="font-size: 25px;">商店
-          <input type="button" value="x" onclick="closeStore()" style="margin-left: 90px;">
+      <button class="btn btn-lg btn-primary btn-block" id="btnLogin">Sign in</button>
+      <button class="btn btn-lg btn-secondary btn-block" id="btnSignUp">New account</button>
+    </div>
+  </div>
+
+  <div id='canvas'></div>
+  <div id='ui'>
+    <div id='bag'>
+      <span style="font-size: 25px;">背包
+        <input type="button" value="x" onclick="closeBag()" style="margin-left: 90px;">
+      </span>
+      <p>
+        武器：<span id="weapon">木劍</span></br>
+        防具：<span id="cloth">皮革上衣</span>
+      </p>
+      <p id="potiona_b">
+        <span>
+          <input type="button" class="sale_btn" value="+" onclick="sale('potiona',1)">
+          <input type="button" class="sale_btn" value="-" onclick="notsale('potiona',1)">
+          <input type="button" class="btn" value="使用" onclick="use(0)">
         </span>
-        <p>
-          <span><input type="button" value="購買" onclick="buy('sword_w')"></span>&nbsp;木劍
-        </p>
-        <p>
-          <span><input type="button" value="購買" onclick="buy('sword_i_b')"></span>&nbsp;鐵劍
-        </p>
-        <p>
-          <span><input type="button" value="購買" onclick="buy('sword_d_b')"></span>&nbsp;鑽劍
-        </p>
-      </div>
-      <div id='sto'>
-        <span style="font-size: 25px;">倉庫</span>
-        <p id="table_bk">
-          <img src="assets/furniture/table_i.png" style="float: left; margin: 5px;">
-          &nbsp;&nbsp;&nbsp;x <span id="table">3</span></br>
-          <span>
-            <input type="button" value="擺放" onclick="place('table')"></br>
-            <input type="button" value="分解" onclick="separ(0)">
-          </span>
-        </p>
-        <p id="chair_bk">
-            <img src="assets/furniture/chair_i.png" style="float: left; margin: 5px;">
-            &nbsp;&nbsp;&nbsp;x <span id="chair">3</span></br>
-            <span>
-              <input type="button" value="擺放" onclick="place('chair')"></br>
-              <input type="button" value="分解" onclick="separ(1)">
-            </span>
-        </p>
-      </div>
-      <div id='craft'>
-          <span style="font-size: 25px;">合成</span>
-          <p>
-            <span><input type="button" value="製作" onclick="craft(0)"></span>
-            桌子 </br>(高級木材 x1)
-          </p>
-          <p>
-            <span><input type="button" value="製作" onclick="craft(1)"></span>
-            椅子 </br>(普通木材 x2)</p>
-      </div>
+        力量藥水 x <span class="num" id="potiona">5</span>&nbsp;<span class="sale" id="potionas">0</span>
+      </p>
+      <p id="potions_b">
+        <span>
+          <input type="button" class="sale_btn" value="+" onclick="sale('potions',1)">
+          <input type="button" class="sale_btn" value="-" onclick="notsale('potions',1)">
+          <input type="button" class="btn" value="使用" onclick="use(1)">
+        </span>
+        敏捷藥水 x <span class="num" id="potions">5</span>&nbsp;<span class="sale" id="potionss">0</span>
+      </p>
+      <p id="potionh_b">
+        <span>
+          <input type="button" class="sale_btn" value="+" onclick="sale('potionh',1)">
+          <input type="button" class="sale_btn" value="-" onclick="notsale('potionh',1)">
+          <input type="button" class="btn" value="使用" onclick="use(2)">
+        </span>
+        治療藥水 x <span class="num" id="potionh">5</span>&nbsp;<span class="sale" id="potionhs">0</span>
+      </p>
+      <p id="strroast_b">
+        <span>
+          <input type="button" class="sale_btn" value="+" onclick="sale('strroast',1)">
+          <input type="button" class="sale_btn" value="-" onclick="notsale('strroast',1)">
+          <input type="button" class="btn" value="使用" onclick="heal('strroast',1)">
+        </span>
+        肉(? x <span class="num" id="strroast">0</span>&nbsp;<span class="sale" id="strroasts">0</span>
+      </p>
+      <p id="roast_b">
+        <span>
+          <input type="button" class="sale_btn" value="+" onclick="sale('roast',1)">
+          <input type="button" class="sale_btn" value="-" onclick="notsale('roast',1)">
+          <input type="button" class="btn" value="使用" onclick="heal('roast',3)">
+        </span>
+        肉肉 x <span class="num" id="roast">0</span>&nbsp;<span class="sale" id="roasts">0</span>
+      </p>
+      <p id="weed_b">
+        <span>
+          <input type="button" class="sale_btn" value="+" onclick="sale('weed',1)">
+          <input type="button" class="sale_btn" value="-" onclick="notsale('weed',1)">
+          <input type="button" id="weed_btn" class="btn" value="使用" onclick="heal('weed',4)">
+        </span>
+        大麻 x <span class="num" id="weed">5</span>&nbsp;<span class="sale" id="weeds">0</span>
+      </p>
+      ===================
+      <p id="wood_b">
+        <span>
+          <input type="button" class="sale_btn" value="+" onclick="sale('wood',1)">
+          <input type="button" class="sale_btn" value="-" onclick="notsale('wood',1)">
+          <input type="button" class="btn" value="升級" onclick="up('wood','wood2')">
+        </span>
+        原木 x <span class="num" id="wood">5</span>&nbsp;<span class="sale" id="woods">0</span>
+      </p>
+      <p id="stone_b">
+        <span>
+          <input type="button" class="sale_btn" value="+" onclick="sale('stone',1)">
+          <input type="button" class="sale_btn" value="-" onclick="notsale('stone',1)">
+          <input type="button" class="btn" value="升級" onclick="up('stone','stone2')">
+        </span>
+        岩石 x <span class="num" id="stone">5</span>&nbsp;<span class="sale" id="stones">0</span>
+      </p>
+      <p id="cotton_b">
+        <span>
+          <input type="button" class="sale_btn" value="+" onclick="sale('cotton',1)">
+          <input type="button" class="sale_btn" value="-" onclick="notsale('cotton',1)">
+          <input type="button" class="btn" value="升級" onclick="up('cotton','cotton2')">
+        </span>
+        棉花 x <span class="num" id="cotton">5</span>&nbsp;<span class="sale" id="cottons">0</span>
+      </p>
+      <p id="coal_b">
+        <span>
+          <input type="button" class="sale_btn" value="+" onclick="sale('coal',1)">
+          <input type="button" class="sale_btn" value="-" onclick="notsale('coal',1)">
+          <input type="button" class="btn" value="升級" onclick="up('coal','coal2')">
+        </span>
+        煤礦 x <span class="num" id="coal">5</span>&nbsp;<span class="sale" id="coals">0</span>
+      </p>
+      <p id="iron_b">
+        <span>
+          <input type="button" class="sale_btn" value="+" onclick="sale('iron',1)">
+          <input type="button" class="sale_btn" value="-" onclick="notsale('iron',1)">
+          <input type="button" class="btn" value="升級" onclick="up('iron','iron2')">
+        </span>
+        鐵礦 x <span class="num" id="iron">5</span>&nbsp;<span class="sale" id="irons">0</span>
+      </p>
+      <p id="ice_b">
+        <span>
+          <input type="button" class="sale_btn" value="+" onclick="sale('ice',1)">
+          <input type="button" class="sale_btn" value="-" onclick="notsale('ice',1)">
+          <input type="button" class="btn" value="升級" onclick="up('ice','ice2')">
+        </span>
+        冰塊 x <span class="num" id="ice">5</span>&nbsp;<span class="sale" id="ices">0</span>
+      </p>
+      <p id="flesh_b">
+        <span>
+          <input type="button" class="sale_btn" value="+" onclick="sale('flesh',1)">
+          <input type="button" class="sale_btn" value="-" onclick="notsale('flesh',1)">
+          <input type="button" class="btn" value="升級" onclick="up('flesh','flesh2')">
+        </span>
+        生肉 x <span class="num" id="flesh">5</span>&nbsp;<span class="sale" id="fleshs">0</span>
+      </p>
+      <p id="cater_b">
+        <span>
+          <input type="button" class="sale_btn" value="+" onclick="sale('cater',1)">
+          <input type="button" class="sale_btn" value="-" onclick="notsale('cater',1)">
+          <input type="button" class="btn" value="升級" onclick="up('cater','cater2')">
+        </span>
+        毛蟲 x <span class="num" id="cater">5</span>&nbsp;<span class="sale" id="caters">0</span>
+      </p>
+      <p id="shell_b">
+        <span>
+          <input type="button" class="sale_btn" value="+" onclick="sale('shell',1)">
+          <input type="button" class="sale_btn" value="-" onclick="notsale('shell',1)">
+          <input type="button" class="btn" value="升級" onclick="up('shell','shell2')">
+        </span>
+        貝殼 x <span class="num" id="shell">5</span>&nbsp;<span class="sale" id="shells">0</span>
+      </p>
+      <p id="skull_b">
+        <span>
+          <input type="button" class="sale_btn" value="+" onclick="sale('skull',1)">
+          <input type="button" class="sale_btn" value="-" onclick="notsale('skull',1)">
+        </span>
+        骨頭 x <span class="num" id="skull">5</span>&nbsp;<span class="sale" id="skulls">0</span>
+      </p>
+      <p id="wood2_b">
+        <span>
+          <input type="button" class="sale_btn" value="+" onclick="sale('wood2',1)">
+          <input type="button" class="sale_btn" value="-" onclick="notsale('wood2',1)">
+        </span>
+        木材 x <span class="num" id="wood2">0</span>&nbsp;<span class="sale" id="wood2s">0</span>
+      </p>
+      <p id="stone2_b">
+        <span>
+          <input type="button" class="sale_btn" value="+" onclick="sale('stone2',1)">
+          <input type="button" class="sale_btn" value="-" onclick="notsale('stone2',1)">
+        </span>
+        石材 x <span class="num" id="stone2">0</span>&nbsp;<span class="sale" id="stone2s">0</span>
+      </p>
+      <p id="cotton2_b">
+        <span>
+          <input type="button" class="sale_btn" value="+" onclick="sale('cotton2',1)">
+          <input type="button" class="sale_btn" value="-" onclick="notsale('cotton2',1)">
+        </span>
+        布料 x <span class="num" id="cotton2">0</span>&nbsp;<span class="sale" id="cotton2s">0</span>
+      </p>
+      <p id="coal2_b">
+        <span>
+          <input type="button" class="sale_btn" value="+" onclick="sale('coal2',1)">
+          <input type="button" class="sale_btn" value="-" onclick="notsale('coal2',1)">
+        </span>
+        煤炭 x <span class="num" id="coal2">0</span>&nbsp;<span class="sale" id="coal2s">0</span>
+      </p>
+      <p id="iron2_b">
+        <span>
+          <input type="button" class="sale_btn" value="+" onclick="sale('iron2',1)">
+          <input type="button" class="sale_btn" value="-" onclick="notsale('iron2',1)">
+        </span>
+        鐵錠 x <span class="num" id="iron2">0</span>&nbsp;<span class="sale" id="iron2s">0</span>
+      </p>
+      <p id="ice2_b">
+        <span>
+          <input type="button" class="sale_btn" value="+" onclick="sale('ice2',1)">
+          <input type="button" class="sale_btn" value="-" onclick="notsale('ice2',1)">
+        </span>
+        冰水 x <span class="num" id="ice2">0</span>&nbsp;<span class="sale" id="ice2s">0</span>
+      </p>
+      <p id="flesh2_b">
+        <span>
+          <input type="button" class="sale_btn" value="+" onclick="sale('flesh2',1)">
+          <input type="button" class="sale_btn" value="-" onclick="notsale('flesh2',1)">
+        </span>
+        肉塊 x <span class="num" id="flesh2">0</span>&nbsp;<span class="sale" id="flesh2s">0</span>
+      </p>
+      <p id="cater2_b">
+        <span>
+          <input type="button" class="sale_btn" value="+" onclick="sale('cater2',1)">
+          <input type="button" class="sale_btn" value="-" onclick="notsale('cater2',1)">
+        </span>
+        蝴蝶 x <span class="num" id="cater2">0</span>&nbsp;<span class="sale" id="cater2s">0</span>
+      </p>
+      <p id="shell2_b">
+        <span>
+          <input type="button" class="sale_btn" value="+" onclick="sale('shell2',1)">
+          <input type="button" class="sale_btn" value="-" onclick="notsale('shell2',1)">
+        </span>
+        珍珠 x <span class="num" id="shell2">0</span>&nbsp;<span class="sale" id="shell2s">0</span>
+      </p>
     </div>
-  </body>
-</html>  
+    <div id='store'>
+      <span style="font-size: 25px;">商店
+        <input type="button" value="x" onclick="closeStore()" style="margin-left: 90px;">
+      </span>
+      <p>
+        <span><input type="button" id="weapon2" class="buy_btn" value="購買" onclick="buy('weapon2')"
+            disabled></span>&nbsp;鐵劍
+      </p>
+      <p>
+        <span><input type="button" id="weapon3" class="buy_btn" value="購買" onclick="buy('weapon3')"
+            disabled></span>&nbsp;鑽劍
+      </p>
+      <p>
+        <span><input type="button" id="cloth2" class="buy_btn" value="購買" onclick="buy('cloth2')"
+            disabled></span>&nbsp;鐵製護甲
+      </p>
+      <p>
+        <span><input type="button" id="cloth3" class="buy_btn" value="購買" onclick="buy('cloth3')"
+            disabled></span>&nbsp;鑽石鎧甲
+      </p>
+    </div>
+    <div id='sto'>
+      <span style="font-size: 25px;">倉庫</span>
+      <p id="table_bk">
+        <img src="assets/furniture/table_i.png" style="float: left; margin: 5px;">
+        &nbsp;&nbsp;&nbsp;x <span id="table">3</span></br>
+        <span>
+          <input type="button" value="擺放" onclick="place('table')"></br>
+          <input type="button" value="分解" onclick="separ(0)">
+        </span>
+      </p>
+      <p id="chair_bk">
+        <img src="assets/furniture/chair_i.png" style="float: left; margin: 5px;">
+        &nbsp;&nbsp;&nbsp;x <span id="chair">3</span></br>
+        <span>
+          <input type="button" value="擺放" onclick="place('chair')"></br>
+          <input type="button" value="分解" onclick="separ(1)">
+        </span>
+      </p>
+    </div>
+    <div id='craft'>
+      <span style="font-size: 25px;">合成</span>
+      <p>
+        <span><input type="button" value="製作" onclick="craft(0)"></span>
+        力量藥水 [攻擊up]</br>(冰水 + 鐵礦 x2 + 大麻x3)
+      </p>
+      <p>
+        <span><input type="button" value="製作" onclick="craft(1)"></span>
+        敏捷藥水 [速度up]</br>(冰水 + 貝殼x2 + 毛蟲x3)
+      </p>
+      <p>
+        <span><input type="button" value="製作" onclick="craft(2)"></span>
+        治療藥水 [hp補滿]</br>(蝴蝶+骨頭2+水3+大麻4)
+      </p>
+      <p>
+        <span><input type="button" value="製作" onclick="craft(3)"></span>
+        肉(? ... [hp+1]</br>(毛蟲 x2 + 煤炭)
+      </p>
+      <p>
+        <span><input type="button" value="製作" onclick="craft(4)"></span>
+        肉肉 ... [hp+3]</br>(肉塊 + 煤炭 x2)
+      </p>
+      <p>
+        <span><input type="button" value="製作" onclick="craft(5)"></span>
+        桌子 </br>(木材 x2)
+      </p>
+      <p>
+        <span><input type="button" value="製作" onclick="craft(6)"></span>
+        椅子 </br>(原木 x2)
+      </p>
+    </div>
+  </div>
+</body>
+
+</html>

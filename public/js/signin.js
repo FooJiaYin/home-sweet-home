@@ -11,6 +11,7 @@ function initApp() {
     document.getElementById('sign_in').style.display = "block";
 
     btnLogin.addEventListener('click', function () {
+        console.log("login1");
         /// TODO 2: Add email login button event
         ///         1. Get user input email and password to login
         var email = txtEmail.value;
@@ -25,6 +26,7 @@ function initApp() {
         firebase.auth().onAuthStateChanged(async function(user) {
             if (user) {
                 // User is signed in.
+                console.log("login2");
                 var displayName = user.displayName;
                 var email = user.email;
                 var emailVerified = user.emailVerified;
@@ -37,6 +39,7 @@ function initApp() {
                     email: email
                 }).then(function (){
                     //window.location.href = "game.html";
+                    console.log("login3");
                     document.getElementById('sign_in').style.display = "none";
                     document.getElementById('canvas').style.display = "block";
                     game.state.start('boot');

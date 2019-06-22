@@ -1,9 +1,14 @@
 var mapState = { 
+  preload: function() {
+    setUpPlayer();
+  },
   create: function() {
     // Add a background image 
     this.bg = game.add.tileSprite(0, 0, game.width, game.height, 'map');
     this.home = game.add.button(0, 160, 'house', this.toHome, this);
+    this.home.inputEnabled = true;
     this.field = game.add.button(580, 100, 'out', this.toField, this);
+    this.field.inputEnabled = true;
     this.gohome = game.add.image(280, 120, 'GoHome');
     this.goout = game.add.image(470, 110, 'GoOut');
     this.home.alpha = 0;

@@ -43,7 +43,7 @@ var loadState = {
 
     ////left//left is same to bullet
     game.load.image('snowleft', 'assets/drops/skull.png');
-    game.load.image('mineleft', 'assets/drops/cutton.png');
+    game.load.image('mineleft', 'assets/drops/cotton.png');
     game.load.image('grassleft', 'assets/drops/meat.png');
     game.load.image('forestleft', 'assets/drops/leaf.png');
     game.load.image('beachleft', 'assets/drops/weed.png');

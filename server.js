@@ -45,8 +45,8 @@ io.on('connection', function(socket) {
         if(state == 'field') {
             socket.player = {
                 id: server.lastSessionID++,
-                x: randomInt(100, 700),
-                y: randomInt(100, 500),
+                x: 190,
+                y: 1040,
                 skin: 1,
                 animation: null,
                 facing: 0

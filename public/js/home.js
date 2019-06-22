@@ -18,6 +18,9 @@ var homeState = {
     this.packing = game.add.sprite(10, 10, 'packing');
     this.packing.visible = false;
 
+    this.map = game.add.button(330, 110, 'GoMap', this.toMap, this);
+    this.map.alpha = 0;
+
     game.items = game.add.group();
     game.items.enableBody = true;
 
@@ -48,28 +51,30 @@ var homeState = {
 
     this.player = game.items.create(400, 460, 'player');
     this.player.anchor.setTo(0.5, 1); 
+    this.player.scale.setTo(0.6, 0.6); 
     this.player.type = "player";
     this.player.facing = 0;
-    this.player.animations.add('goforward', [0, 1, 2, 3], 8, true);
-    this.player.animations.add('goleft', [4, 5, 6, 7], 8, true);
-    this.player.animations.add('goright', [8, 9, 10, 11], 8, true);
-    this.player.animations.add('gobackward', [12, 13, 14, 15], 8, true);
+    this.player.animations.add('goforward', [0, 1, 2, 3, 4, 5], 8, true);
+    this.player.animations.add('goleft', [0, 1, 2, 3, 4, 5], 8, true);
+    this.player.animations.add('goright', [10, 11, 12, 13, 14, 15], 8, true);
+    this.player.animations.add('gobackward', [10, 11, 12, 13, 14, 15], 8, true);
     game.physics.arcade.enable(this.player);
+    game.physics.arcade.overlap(this.player, game.items, this.bound, null, this);
     this.player.body.collideWorldBounds = true;
 
     this.cursor = game.input.keyboard.createCursorKeys();
 
     this.life = game.add.text(700, 20, 'HP:20', { font: '30px Arial'} );
-    this.field = game.add.text(700, 340, '冒險', { font: '40px Microsoft JhengHei', backgroundColor: 'white'});
-    this.field.inputEnabled = true;
-    this.field.events.onInputDown.add(this.toField, this);
-    this.map = game.add.text(700, 400, '地圖', { font: '40px Microsoft JhengHei', backgroundColor: 'white'});
-    this.map.inputEnabled = true;
-    this.map.events.onInputDown.add(this.toMap, this);
-    this.crafts = game.add.text(700, 460, '合成', { font: '40px Microsoft JhengHei', backgroundColor: 'white'});
+    //this.field = game.add.text(700, 340, '冒險', { font: '40px Microsoft JhengHei', backgroundColor: 'white'});
+    //this.field.inputEnabled = true;
+    //this.field.events.onInputDown.add(this.toField, this);
+    //this.map = game.add.text(700, 400, '地圖', { font: '40px Microsoft JhengHei', backgroundColor: 'white'});
+    //this.map.inputEnabled = true;
+    //this.map.events.onInputDown.add(this.toMap, this);
+    this.crafts = game.add.text(700, 80, '合成', { font: '40px Microsoft JhengHei', backgroundColor: 'white'});
     this.crafts.inputEnabled = true;
     this.crafts.events.onInputDown.add(this.openCraft, this);
-    this.storage = game.add.text(700, 520, '倉庫', { font: '40px Microsoft JhengHei', backgroundColor: 'white'});
+    this.storage = game.add.text(700, 140, '倉庫', { font: '40px Microsoft JhengHei', backgroundColor: 'white'});
     this.storage.inputEnabled = true;
     this.storage.events.onInputDown.add(this.openStorage, this);
   }, 
@@ -79,9 +84,22 @@ var homeState = {
     game.physics.arcade.overlap(this.packing, game.items, this.store, null, this);
     game.items.sort('y', Phaser.Group.SORT_ASCENDING);
   },
+  bound: function(player,item) {
+    if(item.y-20<player.y&&player.y<item.y){
+      this.up = 1;
+      this.down = 0;      
+    }else if(item.y<player.y&&player.y<item.y+20){
+      this.up = 0;
+      this.down = 1; 
+    }else{
+      this.up = 1;
+      this.down = 1; 
+    }
+  },
   movePlayer: function() {  
+    game.physics.arcade.overlap(this.player, game.items, this.bound, null, this);
     if (this.cursor.left.isDown&&this.player.y>-3*this.player.x+720) {
-      this.player.body.velocity.x = -200;
+      this.player.body.velocity.x = -300;
       this.player.body.velocity.y = 0;
       this.player.facing = 1;
       this.player.animations.play('goleft');
@@ -92,7 +110,7 @@ var homeState = {
       this.player.facing = 1;
       this.player.animations.play('goleft');
     }else if (this.cursor.right.isDown&&this.player.y>3*this.player.x-1680) { 
-      this.player.body.velocity.x = 200;
+      this.player.body.velocity.x = 300;
       this.player.body.velocity.y = 0;
       this.player.facing = 2;
       this.player.animations.play('goright');
@@ -104,7 +122,8 @@ var homeState = {
       this.player.animations.play('goright');
     }else if (this.cursor.up.isDown&&this.player.y>280&&this.player.y>-3*this.player.x+720&&this.player.y>3*this.player.x-1680) { 
       this.player.body.velocity.x = 0;
-      this.player.body.velocity.y = -200;
+      if(this.up) this.player.body.velocity.y = -300;
+      else this.player.body.velocity.y = 0;
       this.player.facing = 3;
       this.player.animations.play('gobackward');
     }else if (this.cursor.up.isDown) { 
@@ -117,15 +136,21 @@ var homeState = {
       this.player.animations.play('gobackward');
     }else if (this.cursor.down.isDown) { 
       this.player.body.velocity.x = 0;
-      this.player.body.velocity.y = 200;
+      if(this.down) this.player.body.velocity.y = 300;
+      else this.player.body.velocity.y = 0;
       this.player.facing = 0;
       this.player.animations.play('goforward');
     }else{
       this.player.body.velocity.x = 0;
       this.player.body.velocity.y = 0;
-      this.player.frame = this.player.facing*4;
+      if(this.player.facing == 0) this.player.frame = 7;
+      else if(this.player.facing == 1) this.player.frame = 6;
+      else if(this.player.facing == 2) this.player.frame = 9;
+      else this.player.frame = 7;
       this.player.animations.stop();
-    } 
+    }
+    this.up = 1;
+    this.down = 1;
   },
   updateText: function() {
     this.life.setText("HP:" + game.global.hp);

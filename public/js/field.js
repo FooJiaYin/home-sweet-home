@@ -126,11 +126,29 @@ var fieldState = {
       m.kill();
     }, this);
 
-    this.store = game.add.sprite(600, 1100, 'store');
+    this.ghosts = game.add.group();		
+    this.ghosts.enableBody = true;		
+    this.ghosts.createMultiple(10, 'ghost');		
+    this.ghosts.forEach(function(g) {		
+      g.scale.setTo(0.4, 0.4);		
+      g.anchor.setTo(0.5, 0.5);		
+    }, this);
+
+    
+    this.store_bd = game.add.sprite(180, 1200, 'bound');
+    this.store_bd.scale.setTo(2.4,1);
+    game.physics.arcade.enable(this.store_bd);
+    this.store_bd.body.immovable = true;
+    this.store = game.add.sprite(175, 1200, 'store');
     this.store.inputEnabled = true;
     this.store.events.onInputDown.add(this.openStore, this);
-    game.physics.arcade.enable(this.store);
-    this.store.body.immovable = true;
+
+    this.bridge = game.add.sprite(30, 1000, 'bridge');
+    this.bridge.anchor.setTo(0.5, 0); 
+    this.bridge_bd = game.add.sprite(0, 1000, 'bound');
+    this.bridge_bd.scale.setTo(1,0.01);
+    this.bridge_bd.enableBody = true;
+    game.physics.arcade.enable(this.bridge_bd);
 
     this.playersList = [];
     this.playerGroup = game.add.group();
@@ -161,7 +179,7 @@ var fieldState = {
 
     this.life = game.add.text(700, 20, 'HP: ' + game.global.hp, { font: '30px Arial'} );
     this.life.fixedToCamera = true;
-    this.map = game.add.text(700, 400, '地圖', { font: '40px Microsoft JhengHei', backgroundColor: 'white'});
+    /*this.map = game.add.text(700, 400, '地圖', { font: '40px Microsoft JhengHei', backgroundColor: 'white'});
     this.map.inputEnabled = true;
     this.map.fixedToCamera = true;
     this.map.events.onInputDown.add(this.toMap, this);
@@ -172,63 +190,75 @@ var fieldState = {
     this.bag = game.add.text(700, 520, '背包', { font: '40px Microsoft JhengHei', backgroundColor: 'white'});
     this.bag.inputEnabled = true;
     this.bag.fixedToCamera = true;
-    this.bag.events.onInputDown.add(this.openBag, this);
+    this.bag.events.onInputDown.add(this.openBag, this);*/
 
+    this.keyB = game.input.keyboard.addKey(Phaser.Keyboard.B);
+    this.keyB.onDown.add(this.toMap, this);
     this.keyQ = game.input.keyboard.addKey(Phaser.Keyboard.Q);
     this.keyQ.onDown.add(this.swordA, this);
     this.keyW = game.input.keyboard.addKey(Phaser.Keyboard.W);
     this.keyW.onDown.add(this.arrowA, this);
     this.keyE = game.input.keyboard.addKey(Phaser.Keyboard.E);
 
-    this.genW = game.add.text(20, 20, 'W', { font: '40px Microsoft JhengHei', backgroundColor: 'white'});
+    /*this.genW = game.add.text(20, 20, 'W', { font: '40px Microsoft JhengHei', backgroundColor: 'white'});
     this.genW.inputEnabled = true;
     this.genW.fixedToCamera = true;
-    this.genW.events.onInputDown.add(this.genWood, this);
+    this.genW.events.onInputDown.add(this.genWood, this);*/    
     
+    //石頭(all)、木材(forest)、冰(snow)、ㄇㄇ蟲(草地)、棉花(evil)、礦(evil)、貝殼(beach) )
     this.stones = game.add.group();
     this.stones.enableBody = true;
     this.stones.createMultiple(30, 'stone');
-
-    //石頭(all)、木材(forest)、冰(snow)、ㄇㄇ蟲(草地)、棉花(evil)、礦(evil)、貝殼(beach) )
+    this.stones.forEach(function(i) {i.name = "stone";}, this);
+    
     this.ices = game.add.group();
     this.ices.enableBody = true;
     this.ices.createMultiple(100, 'ice');
+    this.ices.forEach(function(i) {i.name = "ice";}, this);
     
     this.caterpillars = game.add.group();
     this.caterpillars.enableBody = true;
     this.caterpillars.createMultiple(100, 'caterpillar');
+    this.caterpillars.forEach(function(i) {i.name = "cater";}, this);
 
     this.coals = game.add.group();
     this.coals.enableBody = true;
     this.coals.createMultiple(30, 'coal');
+    this.coals.forEach(function(i) {i.name = "coal";}, this);
 
     this.shells = game.add.group();
     this.shells.enableBody = true;
     this.shells.createMultiple(30, 'shell');
+    this.shells.forEach(function(i) {i.name = "shell";}, this);
 
     this.growTime = 0;
     this.genEnemyTime = 0;
+
     //left
     this.forestlefts = game.add.group();
     this.forestlefts.enableBody = true;
     this.forestlefts.createMultiple(30, 'forestleft');
+    this.forestlefts.forEach(function(i) {i.name = "iron";}, this);
 
     this.snowlefts = game.add.group();
     this.snowlefts.enableBody = true;
     this.snowlefts.createMultiple(30, 'snowleft');
+    this.snowlefts.forEach(function(i) {i.name = "skull";}, this);
 
     this.minelefts = game.add.group();
     this.minelefts.enableBody = true;
     this.minelefts.createMultiple(30, 'mineleft');
+    this.minelefts.forEach(function(i) {i.name = "cotton";}, this);
 
     this.grasslefts = game.add.group();
     this.grasslefts.enableBody = true;
     this.grasslefts.createMultiple(30, 'grassleft');
+    this.grasslefts.forEach(function(i) {i.name = "flesh";}, this);
 
     this.beachlefts = game.add.group();
     this.beachlefts.enableBody = true;
     this.beachlefts.createMultiple(30, 'beachleft');
-
+    this.beachlefts.forEach(function(i) {i.name = "weed";}, this);
     
     ////enemy by shuling
     //enemy
@@ -319,44 +349,64 @@ var fieldState = {
   
   update: function() {
     if(this.playing && this.player && this.player.body){
-      this.movePlayer();
+      if(!this.player.freeze) this.movePlayer();
       this.playerGroup.sort('y', Phaser.Group.SORT_ASCENDING);
       //this.enemyAlive();
       this.updateEnemyLabel();
       this.bulletBound();
       //this.updateText();
       //this.playerGroup.sort('y', Phaser.Group.SORT_ASCENDING);
-      game.physics.arcade.collide(this.player, this.store);
+      game.physics.arcade.collide(this.player, this.store_bd);
+      game.physics.arcade.overlap(this.player, this.bridge_bd, this.toMap, null, this);
       game.physics.arcade.overlap(this.player, this.circles, this.nearAttack, null, this);
-      game.physics.arcade.overlap(this.swords, this.twigs, this.attack_c, null, this);
-      //game.physics.arcade.overlap(this.sword_b, this.twigs, this.attack_c, null, this);
+
       game.physics.arcade.overlap(this.arrows, this.twigs, this.attack_f, null, this);
-      game.physics.arcade.overlap(this.swords, this.whitewalkers, this.attack_c, null, this);
-      //game.physics.arcade.overlap(this.sword_b, this.whitewalkers, this.attack_c, null, this);
       game.physics.arcade.overlap(this.arrows, this.whitewalkers, this.attack_f, null, this);
-      game.physics.arcade.overlap(this.swords, this.barbarians, this.attack_c, null, this);
-      //game.physics.arcade.overlap(this.sword_b, this.barbarians, this.attack_c, null, this);
       game.physics.arcade.overlap(this.arrows, this.barbarians, this.attack_f, null, this);
-      game.physics.arcade.overlap(this.swords, this.stonemans, this.attack_c, null, this);
-      //game.physics.arcade.overlap(this.sword_b, this.stonemans, this.attack_c, null, this);
       game.physics.arcade.overlap(this.arrows, this.stonemans, this.attack_f, null, this);
-      game.physics.arcade.overlap(this.swords, this.fishs, this.attack_c, null, this);
-      //game.physics.arcade.overlap(this.sword_b, this.fishs, this.attack_c, null, this);
       game.physics.arcade.overlap(this.arrows, this.fishs, this.attack_f, null, this);
+
       game.physics.arcade.overlap(this.player, this.woods, this.pickUp, null, this);
       game.physics.arcade.overlap(this.player, this.forestBullets, this.farAttack, null, this);
       game.physics.arcade.overlap(this.player, this.snowBullets, this.farAttack, null, this);
       game.physics.arcade.overlap(this.player, this.grassBullets, this.farAttack, null, this);
       game.physics.arcade.overlap(this.player, this.mineBullets, this.farAttack, null, this);
       game.physics.arcade.overlap(this.player, this.beachBullets, this.farAttack, null, this);
+
+      game.physics.arcade.overlap(this.player, this.woods, this.pickUp, null, this);
+      game.physics.arcade.overlap(this.player, this.stones, this.pickUp, null, this);
+      game.physics.arcade.overlap(this.player, this.ices, this.pickUp, null, this);
+      game.physics.arcade.overlap(this.player, this.caters, this.pickUp, null, this);
+      game.physics.arcade.overlap(this.player, this.coals, this.pickUp, null, this);
+      game.physics.arcade.overlap(this.player, this.shells, this.pickUp, null, this);
+      game.physics.arcade.overlap(this.player, this.caterpillars, this.pickUp, null, this);
+      game.physics.arcade.overlap(this.player, this.forestlefts, this.pickUp, null, this);
+      game.physics.arcade.overlap(this.player, this.snowlefts, this.pickUp, null, this);
+      game.physics.arcade.overlap(this.player, this.grasslefts, this.pickUp, null, this);
+      game.physics.arcade.overlap(this.player, this.minelefts, this.pickUp, null, this);
+      game.physics.arcade.overlap(this.player, this.beachlefts, this.pickUp, null, this);
+      
+      /*game.physics.arcade.overlap(this.swords, this.twigs, this.attack_c, null, this);
+      game.physics.arcade.overlap(this.swords, this.whitewalkers, this.attack_c, null, this);
+      game.physics.arcade.overlap(this.swords, this.barbarians, this.attack_c, null, this);
+      game.physics.arcade.overlap(this.swords, this.stonemans, this.attack_c, null, this);
+      game.physics.arcade.overlap(this.arrows, this.twigs, this.attack_f, null, this);
+      game.physics.arcade.overlap(this.swords, this.fishs, this.attack_c, null, this);
+
+      game.physics.arcade.overlap(this.sword_b, this.twigs, this.attack_c, null, this);
+      game.physics.arcade.overlap(this.sword_b, this.whitewalkers, this.attack_c, null, this);
+      game.physics.arcade.overlap(this.sword_b, this.barbarians, this.attack_c, null, this);
+      game.physics.arcade.overlap(this.sword_b, this.stonemans, this.attack_c, null, this);
+      game.physics.arcade.overlap(this.sword_b, this.fishs, this.attack_c, null, this);
+      */
     }
   },
 
   /* Generate Materials */
-  genWood: function() {
+  /*genWood: function() {
     var w = this.woods.getFirstExists(false);
     if(w) w.reset(game.rnd.integerInRange(this.player.x-200, this.player.x+200), game.rnd.integerInRange(this.player.y-200, this.player.y+200));
-  },
+  },*/
   growElement: function() {    
     console.log("grow");
     var grow, i, radian=0, posx, posy;
@@ -448,6 +498,46 @@ var fieldState = {
     var i;
     for (i = 0; i < x.length; i++) {
       x[i].style.display = "inline";
+    }
+    var x = document.getElementsByClassName("sale_btn");
+    var y = document.getElementsByClassName("btn");
+    var z = document.getElementsByClassName("buy_btn");
+    var i,j,k;
+    for (i = 0; i < x.length; i++) {
+      x[i].style.display = "inline";
+    }
+    for (j = 0; j < y.length; j++) {
+      y[j].style.display = "none";
+    }
+    for (k = 0; k < z.length; k++) {
+      z[k].disabled = true;
+    }
+  },
+  closeStore: function() {
+    money = 0;
+    var bag = document.getElementById("bag");
+    bag.style.display = "none"; 
+    bag.style.left = "calc(50% - 100px)";
+    var store = document.getElementById("store");
+    store.style.display = "none"; 
+    var x = document.getElementsByClassName("sale");
+    var i;
+    for (i = 0; i < x.length; i++) {
+      x[i].innerHTML = -0;
+      x[i].style.display = "none";
+    }
+    var x = document.getElementsByClassName("btn");
+    var y = document.getElementsByClassName("sale_btn");
+    var z = document.getElementsByClassName("buy_btn");
+    var i,j,k;
+    for (i = 0; i < x.length; i++) {
+      x[i].style.display = "inline";
+    }
+    for (j = 0; j < y.length; j++) {
+      y[j].style.display = "none";
+    }
+    for (k = 0; k < z.length; k++) {
+      z[k].disabled = true;
     }
   }
 }; 
