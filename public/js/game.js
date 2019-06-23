@@ -180,7 +180,7 @@ function closeStore() {
   money = 0;
   var bag = document.getElementById("bag");
   bag.style.display = "none"; 
-  bag.style.left = "calc(50% - 130px)";
+  bag.style.left = "";
   var store = document.getElementById("store");
   store.style.display = "none"; 
   var x = document.getElementsByClassName("sale");

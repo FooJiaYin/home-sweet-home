@@ -34,7 +34,8 @@
   <script type="text/javascript" src="js/game.js"></script>
   <style>
     #canvas{
-      margin-left: calc(50% - 400px);
+        /*margin-left: calc(50% - 400px);*/
+        display: none;
     }
     #bag_info{
       width: 210px;
@@ -45,7 +46,6 @@
       overflow-y: scroll;
     }
     #bag{
-      left: calc(50% - 130px);
       top: 100px;
       width: 260px;
       height: 390px;
@@ -70,6 +70,7 @@
     }
     #sto{
       left: calc(50% + 400px);
+      top: 8px;
       width: 145px;
       height: 600px;
       display: none;
@@ -131,7 +132,10 @@
       <button class="btn btn-lg btn-secondary btn-block" id="btnSignUp">New account</button>
     </div>
   </div>
+
   <div id='canvas'></div>
+    <audio src="assets/soundEffect/cashier.mp3" id="buysound"></audio>
+    <audio src="assets/soundEffect/makeWeapon.mp3" id="craftsound"></audio>
     <div id='bag'>
         <p style="margin-top: 20px;"> 
           <input type="button" value="x" onclick="closeBag()" style="margin-left: 200px;">
@@ -145,7 +149,7 @@
           <span>
             <input type="button" class="sale_btn" value="+" onclick="sale('potiona',7)">
             <input type="button" class="sale_btn" value="-" onclick="notsale('potiona',7)">
-            <input type="button" class="btn" value="使用" onclick="use(0)">
+            <input type="button" class="button" value="使用" onclick="use(0)">
           </span>
           力量藥水 x <span class="num" id="potiona">3</span>&nbsp;<span class="sale" id="potionas">0</span>
         </p>
@@ -153,7 +157,7 @@
           <span>
             <input type="button" class="sale_btn" value="+" onclick="sale('potions',7)">
             <input type="button" class="sale_btn" value="-" onclick="notsale('potions',7)">
-            <input type="button" class="btn" value="使用" onclick="use(1)">
+            <input type="button" class="button" value="使用" onclick="use(1)">
           </span>
           敏捷藥水 x <span class="num" id="potions">3</span>&nbsp;<span class="sale" id="potionss">0</span>
         </p>
@@ -161,7 +165,7 @@
           <span>
             <input type="button" class="sale_btn" value="+" onclick="sale('potionh',14)">
             <input type="button" class="sale_btn" value="-" onclick="notsale('potionh',14)">
-            <input type="button" class="btn" value="使用" onclick="use(2)">
+            <input type="button" class="button" value="使用" onclick="use(2)">
           </span>
           治療藥水 x <span class="num" id="potionh">3</span>&nbsp;<span class="sale" id="potionhs">0</span>
         </p>        
@@ -169,7 +173,7 @@
           <span>
             <input type="button" class="sale_btn" value="+" onclick="sale('strroast',3)">
             <input type="button" class="sale_btn" value="-" onclick="notsale('strroast',3)">
-            <input type="button" class="btn" value="使用" onclick="heal('strroast',1)">
+            <input type="button" class="button" value="使用" onclick="heal('strroast',1)">
           </span>
           肉(? x <span class="num" id="strroast">0</span>&nbsp;<span class="sale" id="strroasts">0</span>
         </p>
@@ -177,7 +181,7 @@
           <span>
             <input type="button" class="sale_btn" value="+" onclick="sale('roast',5)">
             <input type="button" class="sale_btn" value="-" onclick="notsale('roast',5)">
-            <input type="button" class="btn" value="使用" onclick="heal('roast',3)">
+            <input type="button" class="button" value="使用" onclick="heal('roast',3)">
           </span>
           肉肉 x <span class="num" id="roast">0</span>&nbsp;<span class="sale" id="roasts">0</span>
         </p>
@@ -185,7 +189,7 @@
           <span>
             <input type="button" class="sale_btn" value="+" onclick="sale('weed',2)">
             <input type="button" class="sale_btn" value="-" onclick="notsale('weed',2)">
-            <input type="button" id="weed_btn" class="btn" value="使用" onclick="heal('weed',4)">
+            <input type="button" id="weed_btn" class="button" value="使用" onclick="heal('weed',4)">
           </span>
           大麻 x <span class="num" id="weed">0</span>&nbsp;<span class="sale" id="weeds">0</span>
         </p>
@@ -194,7 +198,7 @@
           <span>
             <input type="button" class="sale_btn" value="+" onclick="sale('wood',2)">
             <input type="button" class="sale_btn" value="-" onclick="notsale('wood',2)">
-            <input type="button" class="btn" value="升級" onclick="up('wood','wood2')">
+            <input type="button" class="button" value="升級" onclick="up('wood','wood2')">
           </span>
           原木 x <span class="num" id="wood">0</span>&nbsp;<span class="sale" id="woods">0</span>
         </p>
@@ -202,7 +206,7 @@
           <span>
             <input type="button" class="sale_btn" value="+" onclick="sale('stone',1)">
             <input type="button" class="sale_btn" value="-" onclick="notsale('stone',1)">
-            <input type="button" class="btn" value="升級" onclick="up('stone','stone2')">
+            <input type="button" class="button" value="升級" onclick="up('stone','stone2')">
           </span>
           岩石 x <span class="num" id="stone">0</span>&nbsp;<span class="sale" id="stones">0</span>
         </p>
@@ -210,7 +214,7 @@
           <span>
             <input type="button" class="sale_btn" value="+" onclick="sale('cotton',2)">
             <input type="button" class="sale_btn" value="-" onclick="notsale('cotton',2)">
-            <input type="button" class="btn" value="升級" onclick="up('cotton','cotton2')">
+            <input type="button" class="button" value="升級" onclick="up('cotton','cotton2')">
           </span>
           棉花 x <span class="num" id="cotton">0</span>&nbsp;<span class="sale" id="cottons">0</span>
         </p>
@@ -218,7 +222,7 @@
           <span>
             <input type="button" class="sale_btn" value="+" onclick="sale('coal',1)">
             <input type="button" class="sale_btn" value="-" onclick="notsale('coal',1)">
-            <input type="button" class="btn" value="升級" onclick="up('coal','coal2')">
+            <input type="button" class="button" value="升級" onclick="up('coal','coal2')">
           </span>
           煤礦 x <span class="num" id="coal">0</span>&nbsp;<span class="sale" id="coals">0</span>
         </p>
@@ -226,7 +230,7 @@
           <span>
             <input type="button" class="sale_btn" value="+" onclick="sale('iron',1)">
             <input type="button" class="sale_btn" value="-" onclick="notsale('iron',1)">
-            <input type="button" class="btn" value="升級" onclick="up('iron','iron2')">
+            <input type="button" class="button" value="升級" onclick="up('iron','iron2')">
           </span>
           鐵礦 x <span class="num" id="iron">0</span>&nbsp;<span class="sale" id="irons">0</span>
         </p>
@@ -234,7 +238,7 @@
           <span>
             <input type="button" class="sale_btn" value="+" onclick="sale('ice',1)">
             <input type="button" class="sale_btn" value="-" onclick="notsale('ice',1)">
-            <input type="button" class="btn" value="升級" onclick="up('ice','ice2')">
+            <input type="button" class="button" value="升級" onclick="up('ice','ice2')">
           </span>
           冰塊 x <span class="num" id="ice">0</span>&nbsp;<span class="sale" id="ices">0</span>
         </p>
@@ -242,7 +246,7 @@
           <span>
             <input type="button" class="sale_btn" value="+" onclick="sale('flesh',2)">
             <input type="button" class="sale_btn" value="-" onclick="notsale('flesh',2)">
-            <input type="button" class="btn" value="升級" onclick="up('flesh','flesh2')">
+            <input type="button" class="button" value="升級" onclick="up('flesh','flesh2')">
           </span>
           生肉 x <span class="num" id="flesh">0</span>&nbsp;<span class="sale" id="fleshs">0</span>
         </p>
@@ -250,7 +254,7 @@
           <span>
             <input type="button" class="sale_btn" value="+" onclick="sale('cater',1)">
             <input type="button" class="sale_btn" value="-" onclick="notsale('cater',1)">
-            <input type="button" class="btn" value="升級" onclick="up('cater','cater2')">
+            <input type="button" class="button" value="升級" onclick="up('cater','cater2')">
           </span>
           毛蟲 x <span class="num" id="cater">0</span>&nbsp;<span class="sale" id="caters">0</span>
         </p>
@@ -258,7 +262,7 @@
           <span>
             <input type="button" class="sale_btn" value="+" onclick="sale('shell',1)">
             <input type="button" class="sale_btn" value="-" onclick="notsale('shell',1)">
-            <input type="button" class="btn" value="升級" onclick="up('shell','shell2')">
+            <input type="button" class="button" value="升級" onclick="up('shell','shell2')">
           </span>
           貝殼 x <span class="num" id="shell">0</span>&nbsp;<span class="sale" id="shells">0</span>
         </p>
@@ -580,7 +584,6 @@
           </table>
       </div>
     </div>
-    <script type="text/javascript" src="js/game.js"></script>
 </body>
 
 </html>
