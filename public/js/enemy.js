@@ -322,7 +322,7 @@ fieldState.removeBullet = function (id) {
 
 //attacked
 fieldState.attack_c = function (weapon, monster) {
-    monster.blood--;
+    monster.blood = monster.blood - game.global.attack - game.global.attup;;
     console.log('blood', monster.blood);
     if (monster.type == "grass") {
         monster.notattacked = 0;
