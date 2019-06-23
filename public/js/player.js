@@ -41,8 +41,7 @@ fieldState.updatePlayer = function (id, x, y, animation, facing) {
 }
 
 fieldState.removePlayer = function (id) {
-    this.playerMap[id].destroy();
-    delete this.playerMap[id];
+    this.playerMap[id].kill();
     var deadBody = game.add.sprite(this.playerMap[id].x, this.playerMap[id].y, 'die');
     game.time.events.add(1000, function () { deadBody.destroy(); }, this);
 }

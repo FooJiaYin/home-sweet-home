@@ -433,7 +433,7 @@ var fieldState = {
     //game.time.events.loop(50, this.enemyAttack, this);
     game.time.events.loop(700, this.enemyShoot, this);
     game.time.events.loop(8000, this.generateEnemy, this);
-    game.time.events.loop(3000, this.growElement, this);
+    game.time.events.loop(10000, this.growElement, this);
   }, 
   
   update: function() {
