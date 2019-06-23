@@ -45,9 +45,13 @@ Client.killBullet = function(id, reason) {
     console.log("killBullet:", reason);
 }
 
-Client.attack = function(weapon) {
-    Client.socket.emit(weapon);
+Client.sword = function(weapon) {
+    Client.socket.emit('sword', weapon);
     console.log(weapon);
+}
+
+Client.arrow = function() {
+    Client.socket.emit('arrow');
 }
 
 Client.sendTest = function() {
@@ -91,9 +95,9 @@ Client.socket.on('allplayers', function(data) {
     });
 });
 
-Client.socket.on('showSword', function(data) {
+Client.socket.on('showSword', function(data, weapon) {
     if(Client.gameState == 'field')
-        fieldState.showSword(data);
+        fieldState.showSword(data, weapon);
 });
 
 Client.socket.on('createArrow', function(data) {

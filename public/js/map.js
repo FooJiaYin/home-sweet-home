@@ -1,6 +1,7 @@
 var mapState = { 
   preload: function() {
     setUpPlayer();
+    loadValues();
   },
   create: function() {
     // Add a background image 
@@ -21,6 +22,8 @@ var mapState = {
     this.field.onInputOut.add(function(){this.goout.alpha = 0;}, this);
   },
   toHome: function() {
+    game.fieldBgm.stop();
+    game.homeBgm.play();
     game.state.start('home'); 
   },
   toField: function() {

@@ -12,21 +12,35 @@ game.state.add('field', fieldState);
 // Start the 'boot' state 
 //game.state.start('boot');
 
-game.global.furn = [{type:"table",x:80,y:500},{type:"chair",x:230,y:550},{type:"table",x:430,y:500}];
+game.global.furn = [{type:"table",x:327,y:450},{type:"seat",x:300,y:500}];
 var craft_tb = [
   {name:"potiona",src:["ice2",1,"iron",2,"weed",3]},
   {name:"potions",src:["ice2",1,"shell",2,"cater",3]},
   {name:"potionh",src:["cater2",1,"skull",2,"ice2",3,"weed",4]},
   {name:"strroast",src:["cater",2,"coal2",1]},
   {name:"roast",src:["flesh2",1,"coal2",2]},
+
   {name:"table",src:["wood2",2]},
-  {name:"chair",src:["wood",2]},
+  {name:"table1",src:["iron2",2]},
+  {name:"seat",src:["cutton",6]},
+  {name:"seat1",src:["shell2",2]},
+  {name:"closet",src:["wood2",2,"shell",2]},
+  {name:"closet1",src:["stone2",2,"skull",2]},
+  {name:"bookshelf",src:["wood2",4]},
+  {name:"bookshelf1",src:["stone2",4]},
+  {name:"bed",src:["wood",6,"cutton2",2]},
+  {name:"bed1",src:["skull",6,"cutton2",2]},
+  {name:"light",src:["iron2",2,"ice",4]},
+  {name:"flower",src:["wood",4,"coal",2]},
+  {name:"flower1",src:["wood",4,"iron",2]},
+  {name:"flower2",src:["wood",4,"ice",2]}
 ];
 var items_tb = ["potiona","potions","potionh","strroast","roast","weed",
   "wood","stone","cotton","coal","iron","ice","flesh","cater","shell","skull",
   "wood2","stone2","cotton2","coal2","iron2","ice2","flesh2","cater2","shell2"
 ];
 
+var clr = 0;
 var money = 0;
 
 function setUpPlayer() {
@@ -47,6 +61,11 @@ function setUpPlayer() {
     game.global.maxhp = 30;
   }
 };
+
+function carpet() {
+  clr = (clr+1)%4;
+  game.carpet.frame = clr;
+}
 
 function up(a,b) {
   var x = document.getElementById(a);
@@ -102,7 +121,7 @@ function separ(a) {
   }
 }
 function onDragStop(item, pointer) {
-  if (pointer.x < 90 && pointer.x < 90){
+  if (700 < pointer.x && pointer.x < 780 && pointer.x > 100 && pointer.y < 180){
     var x = document.getElementById(item.type);
     x.innerHTML = Number(x.innerHTML)+1;
     item.kill();
@@ -113,13 +132,16 @@ function heal(a,b) {
   if(Number(x.innerHTML)>0){
     x.innerHTML = Number(x.innerHTML)-1;
     if(a=="weed"){
+      game.fieldBgm.pause();
+      game.time.events.add(24500, function() {game.fieldBgm.resume();}, this);
+      game.weedBgm.play();
       document.getElementById(a+"_btn").disabled=true;
       game.global.weed = 1;
       closeBag();
       window.setTimeout(function(){
         game.global.weed = 0;
         document.getElementById(a+"_btn").disabled=false;
-      },10000);
+      },24500);
     }
     if (game.global.hp+b < game.global.maxhp) game.global.hp = game.global.hp + b;
     else game.global.hp = game.global.maxhp;
@@ -149,7 +171,7 @@ function closeStore() {
   money = 0;
   var bag = document.getElementById("bag");
   bag.style.display = "none"; 
-  bag.style.left = "calc(50% - 100px)";
+  bag.style.left = "";
   var store = document.getElementById("store");
   store.style.display = "none"; 
   var x = document.getElementsByClassName("sale");
@@ -180,18 +202,19 @@ function buy(a) {
   if(a=='weapon2'){
     w.innerHTML = "鐵劍";
     game.global.weapon = 2;
-    game.global.attack = 2;
+    game.global.attack = 4;
   }else if(a=='weapon3'){
     w.innerHTML = "鑽劍";
-    game.global.attack = 3;
+    game.global.weapon = 3;
+    game.global.attack = 8;
   }else if(a=='cloth2'){
     c.innerHTML = "鐵製護甲";
     game.global.cloth = 2;
-    game.global.maxhp = 25;
+    game.global.maxhp = 30;
   }else if(a=='cloth3'){
     c.innerHTML = "鑽石鎧甲";
     game.global.cloth = 3;
-    game.global.maxhp = 30;
+    game.global.maxhp = 40;
   }
   var i;
   for(i=0;i<items_tb.length;i++){
@@ -205,6 +228,14 @@ function buy(a) {
   for (k = 0; k < z.length; k++) {
     z[k].disabled = true;
   }
+  var sound = document.getElementById("buysound");
+  var currentTime = sound.currentTime;
+  var duration = sound.duration;
+  if (currentTime <= 0 || currentTime == duration) {
+    sound.play();
+  }
+  saveState();
+  closeStore();
 }
 function sale(a,b) {
   var x = document.getElementById(a);
@@ -212,22 +243,21 @@ function sale(a,b) {
   if(Number(x.innerHTML)+Number(y.innerHTML)>0){
     y.innerHTML = Number(y.innerHTML) - 1;
     money = money + b;
-    if(game.global.weapon<2&&money>=10) document.getElementById("weapon2").disabled=false;
-    if(game.global.weapon<3&&money>=(30-game.global.weapon*5)) document.getElementById("weapon3").disabled=false;
-    if(game.global.cloth<2&&money>=10) document.getElementById("cloth2").disabled=false;
-    if(game.global.cloth<3&&money>=(30-game.global.cloth*5)) document.getElementById("cloth3").disabled=false;
+    if(game.global.weapon<2&&money>=25) document.getElementById("weapon2").disabled=false;
+    if(game.global.weapon<3&&money>=(60-game.global.weapon*10)) document.getElementById("weapon3").disabled=false;
+    if(game.global.cloth<2&&money>=20) document.getElementById("cloth2").disabled=false;
+    if(game.global.cloth<3&&money>=(50-game.global.cloth*10)) document.getElementById("cloth3").disabled=false;
   }
-  console.log(money);
 }
 function notsale(a,b) {
   var x = document.getElementById(a+"s");
   if(Number(x.innerHTML)<0){
     x.innerHTML = Number(x.innerHTML) + 1;
     money = money - b;
-    if(game.global.weapon>1||money<10) document.getElementById("weapon2").disabled=true;
-    if(game.global.weapon>2||money<(30-game.global.weapon*5)) document.getElementById("weapon3").disabled=true;
-    if(game.global.cloth>1||money<10) document.getElementById("cloth2").disabled=true;
-    if(game.global.cloth>2||money<(30-game.global.cloth*5)) document.getElementById("cloth3").disabled=true;
+    if(game.global.weapon>1||money<25) document.getElementById("weapon2").disabled=true;
+    if(game.global.weapon>2||money<(60-game.global.weapon*5)) document.getElementById("weapon3").disabled=true;
+    if(game.global.cloth>1||money<20) document.getElementById("cloth2").disabled=true;
+    if(game.global.cloth>2||money<(50-game.global.cloth*5)) document.getElementById("cloth3").disabled=true;
   }
   console.log(money);
 }

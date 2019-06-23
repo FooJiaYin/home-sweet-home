@@ -9,28 +9,32 @@ fieldState.addNewPlayer = function (id, x, y, skin) {
     this.playersList[id].scale.setTo(0.6, 0.6); 
     this.playersList[id].id = id;
     this.playersList[id].freeze = false;
+    this.playersList[id].animations.add('goforward', [20, 21], 4, true);
+    this.playersList[id].animations.add('goleft', [0, 1, 2, 3, 4, 5], 8, true);
+    this.playersList[id].animations.add('goright', [10, 11, 12, 13, 14, 15], 8, true);
+    this.playersList[id].animations.add('gobackward', [18, 19], 4, true);
     this.playerGroup.add(this.playersList[id]);
     game.physics.arcade.enable(this.playersList[id]);
     this.playersList[id].body.collideWorldBounds = true;
-    this.playersList[id].animations.add('goforward', [0, 1, 2, 3, 4, 5], 8, true);
-    this.playersList[id].animations.add('goleft', [0, 1, 2, 3, 4, 5], 8, true);
-    this.playersList[id].animations.add('goright', [10, 11, 12, 13, 14, 15], 8, true);
-    this.playersList[id].animations.add('gobackward', [10, 11, 12, 13, 14, 15], 8, true);
     if (id == this.playerId) {
         this.player = this.playersList[id];
         game.camera.follow(this.player, Phaser.Camera.FOLLOW_LOCKON, 0.1, 0.1);
-        this.player.facing = 0;
-        this.player.inputEnabled = true;
-        this.player.events.onInputDown.add(this.openBag, this);
+        this.playersList[id].facing = 0;
+        this.playersList[id].inputEnabled = true;
+        this.playersList[id].events.onInputDown.add(this.openBag, this);
     }
 }
 
 fieldState.updatePlayer = function (id, x, y, animation, facing) {
     this.playersList[id].x = x;
     this.playersList[id].y = y;
+    this.playersList[id].facing = facing;
     if (animation == null) {
         this.playersList[id].animations.stop();
-        this.playersList[id].frame = facing * 4;
+        if(facing == 0) this.playersList[id].frame = 7;
+        else if(facing == 1) this.playersList[id].frame = 6;
+        else if(facing == 2) this.playersList[id].frame = 9;
+        else this.playersList[id].frame = 22;
     }
     else this.playersList[id].animations.play(animation);
 }
@@ -50,18 +54,22 @@ fieldState.movePlayer = function () {
     else if (this.cursor.left.isDown){
         this.player.facing = 1;
         this.player.animations.play('goleft');
+        this.closeStore();
     } 
     else if (this.cursor.right.isDown){
         this.player.facing = 2;
         this.player.animations.play('goright');
+        this.closeStore();
     } 
     else if (this.cursor.up.isDown){
         this.player.facing = 3;
         this.player.animations.play('gobackward');
+        this.closeStore();
     } 
     else if (this.cursor.down.isDown){
         this.player.facing = 0;
         this.player.animations.play('goforward');
+        this.closeStore();
     }
   
     if (((!game.global.weed&&this.cursor.left.isDown) || (game.global.weed&&this.cursor.right.isDown))&&this.player.x>100) {
@@ -76,28 +84,28 @@ fieldState.movePlayer = function () {
         this.player.body.velocity.y = 0;
     } 
     else if ((!game.global.weed&&this.cursor.right.isDown) || (game.global.weed&&this.cursor.left.isDown)) { 
-        document.getElementById("bag").style.display = "none";
+        //document.getElementById("bag").style.display = "none";
         this.player.body.velocity.x = 300*game.global.speup;
         this.player.body.velocity.y = 0;
     } 
     else if (((!game.global.weed&&this.cursor.up.isDown) || (game.global.weed&&this.cursor.down.isDown))&&this.player.y>180) { 
-        document.getElementById("bag").style.display = "none";
+        //document.getElementById("bag").style.display = "none";
         this.player.body.velocity.x = 0;
         this.player.body.velocity.y = -300*game.global.speup;
     } 
     else if ((!game.global.weed&&this.cursor.up.isDown) || (game.global.weed&&this.cursor.down.isDown)) { 
-        document.getElementById("bag").style.display = "none";
+        //document.getElementById("bag").style.display = "none";
         this.player.y = 180;      
         this.player.body.velocity.x = 0;
         this.player.body.velocity.y = 0;
     } 
     else if (((!game.global.weed&&this.cursor.down.isDown) || (game.global.weed&&this.cursor.up.isDown))&&this.player.y<1800) { 
-        document.getElementById("bag").style.display = "none";
+        //document.getElementById("bag").style.display = "none";
         this.player.body.velocity.x = 0;
         this.player.body.velocity.y = 300*game.global.speup;
     } 
     else if ((!game.global.weed&&this.cursor.down.isDown) || (game.global.weed&&this.cursor.up.isDown)) { 
-        document.getElementById("bag").style.display = "none";
+        //document.getElementById("bag").style.display = "none";
         this.player.y = 1800;
         this.player.body.velocity.x = 0;
         this.player.body.velocity.y = 0;
@@ -108,7 +116,7 @@ fieldState.movePlayer = function () {
         if(this.player.facing == 0) this.player.frame = 7;
         else if(this.player.facing == 1) this.player.frame = 6;
         else if(this.player.facing == 2) this.player.frame = 9;
-        else this.player.frame = 7;
+        else this.player.frame = 22;
         this.player.animations.stop();
     } 
     if (this.player.animations.currentAnim.isPlaying) {
@@ -129,67 +137,67 @@ fieldState.pickUp = function (player, item) {
 fieldState.swordA = function () {
     this.showSword(this.player);
     //console.log(this.player.freeze);
-    Client.attack('sword');
+    Client.sword(game.global.weapon);
 }
 
-fieldState.showSword = function (player) {
-    var sword = this.swords.getFirstDead();
-    sword.x = -40;
-    sword.y = -40;
-    sword.x = -40;
-    sword.y = -40;
-    if (player.facing == 0) {
-        this.player.frame = 17;
+fieldState.showSword = function (player, weapon) {
+    var sword; 
+    if (player.facing == 0 || player.facing == 1) {
+        this.playersList[player.id].frame = 17;
+        sword = this.swords.getFirstDead();
         //sword.frame = 0;
-        this.sword.animations.play('attleft');
-        this.sword.x = this.player.x - 43;
-        this.sword.y = this.player.y - 28;
-        sword.reset(player.x - 43, player.y - 28);
-    } else if (player.facing == 1) {
-        this.player.frame = 0;
+        sword.reset(player.x - 20, player.y + 28);
+        sword.x = player.x - 20;
+        sword.y = player.y + 28;
+        if(weapon==1) sword.animations.play('attleft');
+        else if(weapon==2) sword.animations.play('attleft2');
+        else sword.animations.play('attleft3');
+    /*} else if (player.facing == 1) {
+        this.playersList[player.id].frame = 0;
+        sword = this.swords_b.getFirstDead();
         //sword.frame = 1;
-        this.sword.x = this.player.x - 43;
-        this.sword.y = this.player.y - 28;
-        this.sword.animations.play('attleft');
         sword.reset(player.x - 43, player.y - 28);
+        sword.x = player.x - 43;
+        sword.y = player.y - 28;
+        sword.animations.play('attleft');
     } else if (player.facing == 2) {
-        this.player.frame = 16;
+        playersList[player.id].frame = 16;
+        sword = this.swords.getFirstDead();
         //sword.frame = 0;
         sword.reset(player.x - 5, player.y - 28);
         sword.x = player.x - 5;
         sword.y = player.y - 28;
-        this.sword.animations.play('attright');
-    } else {
-        sword.frame = 16;
-        sword.reset(player.x - 5, player.y - 28);
-        sword.x = player.x - 5;
-        sword.y = player.y - 28;
-        this.sword.animations.play('attright');
+        sword.animations.play('attright');
+    */} else {
+        this.playersList[player.id].frame = 16;
+        sword = this.swords_b.getFirstDead();
+        sword.reset(player.x + 35, player.y + 28);
+        sword.x = player.x + 35;
+        sword.y = player.y + 28;
+        if(player.weapon==1) sword.animations.play('attright');
+        else if(player.weapon==2) sword.animations.play('attright2');
+        else sword.animations.play('attright3');
     }
-    player.animations.stop();
-    player.body.velocity.x = 0;
-    player.body.velocity.y = 0;
+    game.physics.arcade.enable(sword);
+    this.playersList[player.id].animations.stop();
+    this.playersList[player.id].body.velocity.x = 0;
+    this.playersList[player.id].body.velocity.y = 0;
     this.playersList[player.id].freeze = true;
     
-    this.sword_b.animations.currentAnim.onComplete.add(function () {
+    sword.animations.currentAnim.onComplete.add(function () {
         sword.kill();
         game.physics.arcade.overlap(this.sword, this.twigs, this.attack_c, null, this);
-        game.physics.arcade.overlap(this.sword_b, this.twigs, this.attack_c, null, this);
         game.physics.arcade.overlap(this.sword, this.whitewalkers, this.attack_c, null, this);
-        game.physics.arcade.overlap(this.sword_b, this.whitewalkers, this.attack_c, null, this);
         game.physics.arcade.overlap(this.sword, this.barbarians, this.attack_c, null, this);
-        game.physics.arcade.overlap(this.sword_b, this.barbarians, this.attack_c, null, this);
         game.physics.arcade.overlap(this.sword, this.stonemans, this.attack_c, null, this);
-        game.physics.arcade.overlap(this.sword_b, this.stonemans, this.attack_c, null, this);
         game.physics.arcade.overlap(this.sword, this.fishs, this.attack_c, null, this);
-        game.physics.arcade.overlap(this.sword_b, this.fishs, this.attack_c, null, this);
-        this.player.freeze = false;
+        this.playersList[player.id].freeze = false;
     }, this);
 }
 
 fieldState.arrowA = function () {
     this.createArrow(this.player);
-    Client.attack('arrow');
+    Client.arrow();
 }
 
 fieldState.createArrow = function (player) {
@@ -224,6 +232,8 @@ fieldState.nearAttack = function(player, circle) {
     var enemy = this.enemies[circle.id];
     // Near attack is available for the type and the enemy isn't busy
     if(!enemy.currentAnim) {
+        this.attackSnd.volumn = 0.8;
+        this.attackSnd.play();
         if(enemy.type == 'grass'){
             enemy.animations.play('attack');
         }
@@ -254,7 +264,9 @@ fieldState.hurt = function () {
     if (game.global.hp < 1) {
         this.dead();
     }
-    this.life.setText("HP:" + game.global.hp);
+    //this.life.setText("HP:" + game.global.hp);
+    this.lifetext.setText(game.global.hp+"/"+game.global.maxhp);
+    this.life.scale.setTo(game.global.hp/game.global.maxhp,1);
     saveState();
 }
 
@@ -263,7 +275,7 @@ fieldState.dead = function () {
     this.player.freeze = true;
     var deadBody = game.add.sprite(this.player.x, this.player.y, 'die');
     deadBody.anchor.setTo(0.5, 0.5);
-    die.scale.setTo(0.6, 0.6);
+    deadBody.scale.setTo(0.6, 0.6);
     this.player.kill();
     var x = document.getElementsByClassName("num");
     var i;
@@ -279,6 +291,8 @@ fieldState.dead = function () {
     game.global.cloth = 1;
     game.global.maxhp = 20;
     game.camera.fade(0x000000, 2500);
+    game.fieldBgm.stop();
+    game.playerDie.play();
     game.time.events.add(2500, function () { 
         Client.socket.close();
         game.state.start('home'); 

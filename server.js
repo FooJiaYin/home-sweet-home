@@ -84,8 +84,8 @@ io.on('connection', function(socket) {
             }
         });
     
-        socket.on('sword', function() {
-            socket.broadcast.emit('showSword', socket.player);
+        socket.on('sword', function(weapon) {
+            socket.broadcast.emit('showSword', socket.player, weapon);
         });
 
         socket.on('arrow', function() {

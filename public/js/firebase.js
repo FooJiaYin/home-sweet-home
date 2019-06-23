@@ -20,8 +20,19 @@ initValues = async function() {
         speup: 1
     });
     firebase.database().ref('profile/' + userId + '/home/storage').set({
-        tableNo: 3,
-        chairNo: 2
+        tableNo: 1,
+        table1No: 1,
+        seatNo: 1,
+        closetNo: 1,
+        closet1No: 1,
+        bookshelfNo: 1,
+        bookshelf1No: 1,
+        bedNo: 1,
+        bed1No: 1,
+        lightNo: 1,
+        flowerNo: 1,
+        flower1No: 1,
+        flower2No: 1,
     });
     firebase.database().ref('profile/' + userId + '/bag').set({
         potionaNo: 5,
@@ -49,11 +60,6 @@ initValues = async function() {
         shellNo: 5,
         shell2No: 0,
         skullNo: 5
-    });
-    firebase.database().ref('profile/' + userId + '/bag/weapon').set({
-        sword_w: true,
-        sword_i: true,
-        sword_d: true,
     });
 }
 
@@ -99,7 +105,18 @@ loadValues = async function() {
     });
     firebase.database().ref('profile/' + userId + '/home/storage').once('value', function(snapshot) {
         document.getElementById('table').innerHTML = snapshot.val().tableNo;
-        document.getElementById('chair').innerHTML = snapshot.val().chairNo;
+        document.getElementById('table1').innerHTML = snapshot.val().table1No;
+        document.getElementById('seat').innerHTML = snapshot.val().seatNo;
+        document.getElementById('closet').innerHTML = snapshot.val().closetNo;
+        document.getElementById('closet1').innerHTML = snapshot.val().closet1No;
+        document.getElementById('bookshelf').innerHTML = snapshot.val().bookshelfNo;
+        document.getElementById('bookshelf1').innerHTML = snapshot.val().bookshelf1No;
+        document.getElementById('bed').innerHTML = snapshot.val().bedNo;
+        document.getElementById('bed1').innerHTML = snapshot.val().bed1No;
+        document.getElementById('light').innerHTML = snapshot.val().lightNo;
+        document.getElementById('flower').innerHTML = snapshot.val().flowerNo;
+        document.getElementById('flower1').innerHTML = snapshot.val().flower1No;        
+        document.getElementById('flower2').innerHTML = snapshot.val().flower2No;
     });
     //firebase.database().ref('profile/' + userId + '/home/furniture').once('value', function(snapshot));
 }
@@ -137,7 +154,18 @@ saveState = async function() {
     var shell2No = Number(document.getElementById('shell2').innerHTML);
     var skullNo = Number(document.getElementById('skull').innerHTML);
     var tableNo = Number(document.getElementById('table').innerHTML);
-    var chairNo = Number(document.getElementById('chair').innerHTML);
+    var table1No = Number(document.getElementById('table1').innerHTML);
+    var seatNo = Number(document.getElementById('seat').innerHTML);
+    var closetNo = Number(document.getElementById('closet').innerHTML);
+    var closet1No = Number(document.getElementById('closet1').innerHTML);
+    var bookshelfNo = Number(document.getElementById('bookshelf').innerHTML);
+    var bookshelf1No = Number(document.getElementById('bookshelf1').innerHTML);
+    var bedNo = Number(document.getElementById('bed').innerHTML);
+    var bed1No = Number(document.getElementById('bed1').innerHTML);
+    var lightNo = Number(document.getElementById('light').innerHTML);
+    var flowerNo = Number(document.getElementById('flower').innerHTML);
+    var flower1No = Number(document.getElementById('flower1').innerHTML);
+    var flower2No = Number(document.getElementById('flower2').innerHTML);
     console.log("state saved.", hp);
     firebase.database().ref('profile/' + userId + '/avatar').set({
         hp: hp,
@@ -151,7 +179,18 @@ saveState = async function() {
     await firebase.database().ref('profile/' + userId + '/home/furniture').set(game.global.furn);
     firebase.database().ref('profile/' + userId + '/home/storage').set({
         tableNo: tableNo,
-        chairNo: chairNo
+        table1No: table1No,
+        seatNo: seatNo,
+        closetNo: closetNo,
+        closet1No: closet1No,
+        bookshelfNo: bookshelfNo,
+        bookshelf1No: bookshelf1No,
+        bedNo: bedNo,
+        bed1No: bed1No,
+        lightNo: lightNo,
+        flowerNo: flowerNo,
+        flower1No: flower1No,
+        flower2No: flower2No
     });
     firebase.database().ref('profile/' + userId + '/bag').set({
         potionaNo: potionaNo,
