@@ -34,6 +34,7 @@ initValues = async function() {
         flower1No: 1,
         flower2No: 1,
     });
+    firebase.database().ref('profile/' + userId + '/home/carpetColor').set(0);
     firebase.database().ref('profile/' + userId + '/bag').set({
         potionaNo: 5,
         potionsNo: 5,
@@ -75,6 +76,20 @@ loadValues = async function() {
         game.global.weed = snapshot.val().weed;
         game.global.attup = snapshot.val().attup;
         game.global.speup = snapshot.val().speup;
+    });
+    firebase.database().ref('profile/' + userId + '/home/furniture').once('value', function(snapshot) {
+        console.log("load furniture");
+        var i = 0;
+        snapshot.forEach(function(childSnapshot) {
+            game.global.furn[i] = {
+                x: childSnapshot.val().x,
+                y: childSnapshot.val().y,
+                type: childSnapshot.val().type
+            };
+            i++;
+        });
+        //game.global.furn = snapshot.val();
+        console.log(game.global.furn);
     });
     firebase.database().ref('profile/' + userId + '/bag').once('value', function(snapshot) {
         document.getElementById('potiona').innerHTML = snapshot.val().potionaNo;
@@ -118,7 +133,9 @@ loadValues = async function() {
         document.getElementById('flower1').innerHTML = snapshot.val().flower1No;        
         document.getElementById('flower2').innerHTML = snapshot.val().flower2No;
     });
-    //firebase.database().ref('profile/' + userId + '/home/furniture').once('value', function(snapshot));
+    firebase.database().ref('profile/' + userId + '/home/carpetColor').once('value', function(snapshot) {
+        game.global.carpetColor = snapshot.val();
+    });
 }
 
 saveState = async function() {
@@ -128,6 +145,7 @@ saveState = async function() {
     var weed = game.global.weed;
     var attup = game.global.attup;
     var speup = game.global.speup;
+    var carpetColor = game.global.carpetColor;
     var potionaNo = Number(document.getElementById('potiona').innerHTML);
     var potionsNo = Number(document.getElementById('potions').innerHTML);
     var potionhNo = Number(document.getElementById('potionh').innerHTML);
@@ -192,6 +210,7 @@ saveState = async function() {
         flower1No: flower1No,
         flower2No: flower2No
     });
+    firebase.database().ref('profile/' + userId + '/home/carpetColor').set(game.global.carpetColor);
     firebase.database().ref('profile/' + userId + '/bag').set({
         potionaNo: potionaNo,
         potionsNo: potionsNo,

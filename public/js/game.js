@@ -2,7 +2,7 @@
 var game = new Phaser.Game(800, 600, Phaser.CANVAS, 'canvas'); 
 
 // Define our global variable 
-game.global = { furn: [], hp: 20, weapon: 1, attack: 1, cloth: 1, maxhp: 20, weed: 0, attup: 0, speup: 1}; 
+game.global = { furn: [], carpetColor: 0, hp: 20, weapon: 1, attack: 1, cloth: 1, maxhp: 20, weed: 0, attup: 0, speup: 1}; 
 // Add all the states 
 game.state.add('boot', bootState); 
 game.state.add('load', loadState); 
@@ -63,8 +63,8 @@ function setUpPlayer() {
 };
 
 function carpet() {
-  clr = (clr+1)%4;
-  game.carpet.frame = clr;
+  game.global.carpetColor = (game.global.carpetColor+1)%4;
+  game.carpet.frame = game.global.carpetColor;
 }
 
 function up(a,b) {

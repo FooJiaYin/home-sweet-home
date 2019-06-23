@@ -23,6 +23,7 @@ var homeState = {
     this.map = game.add.button(330, 110, 'GoMap', this.toMap, this);
     this.map.alpha = 0;
     game.carpet = game.add.sprite(84, 312, 'carpet');
+    game.carpet.frame = game.global.carpetColor;
 
     this.lifebar = game.add.sprite(10, 10, 'bloodBottom');
     this.life = game.add.sprite(51, 32, 'blood');
@@ -33,31 +34,15 @@ var homeState = {
     this.storage.scale.setTo(0.8, 0.8); 
     game.items = game.add.group();
     game.items.enableBody = true;
-
-    firebase.database().ref('profile/' + userId + '/home/furniture').once('value', function(snapshot) {
-      console.log("load furniture");
-      var i = 0;
-      snapshot.forEach(function(childSnapshot) {
-        game.global.furn[i] = {
-          x: childSnapshot.val().x,
-          y: childSnapshot.val().y,
-          type: childSnapshot.val().type
-        };
-        i++;
-      });
-      //game.global.furn = snapshot.val();
-      console.log(game.global.furn);
-    }).then(function() {
-      console.log("put furniture");
-      for (var i = 0; i < game.global.furn.length; i++){
-        x = game.items.create(game.global.furn[i].x, game.global.furn[i].y, game.global.furn[i].type);
-        x.type = game.global.furn[i].type;
-        game.physics.arcade.enable(x);
-      }
-      game.items.forEach(function(i) {
-        i.anchor.setTo(0, 1);
-      }, this);
-    });
+    
+    for (var i = 0; i < game.global.furn.length; i++){
+      x = game.items.create(game.global.furn[i].x, game.global.furn[i].y, game.global.furn[i].type);
+      x.type = game.global.furn[i].type;
+      game.physics.arcade.enable(x);
+    }
+    game.items.forEach(function(i) {
+      i.anchor.setTo(0, 1);
+    }, this);
 
     this.player = game.items.create(400, 460, 'player');
     this.player.anchor.setTo(0.5, 1); 
@@ -230,6 +215,7 @@ var homeState = {
       }, this);
     }else{
       sto.style.display = "none";
+      this.storage.frame = 0; 
       this.player.visible = true;
       //this.packing.visible = false;
       this.decorating = 0;

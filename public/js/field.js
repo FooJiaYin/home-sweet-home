@@ -573,6 +573,7 @@ var fieldState = {
     var bag = document.getElementById("bag");
     bag.style.display = "none";
     this.closeStore();
+    this.player.kill();
     Client.socket.close();
     game.state.start('map'); 
   },
@@ -580,6 +581,7 @@ var fieldState = {
     var bag = document.getElementById("bag");
     bag.style.display = "none"; 
     this.closeStore();
+    this.player.kill();
     Client.socket.close();
     game.state.start('home');  
   },
