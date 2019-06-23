@@ -128,7 +128,7 @@ fieldState.movePlayer = function () {
 fieldState.pickUp = function (player, item) {
     if (this.keyE.isDown) {
         item.kill();
-        var num_w = document.getElementById(item_name);
+        var num_w = document.getElementById(item.name);
         num_w.innerHTML = Number(num_w.innerHTML) + 1;
         saveState();
     }
