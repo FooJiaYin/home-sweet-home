@@ -189,7 +189,7 @@ function closeStore() {
     x[i].innerHTML = -0;
     x[i].style.display = "none";
   }
-  var x = document.getElementsByClassName("btn");
+  var x = document.getElementsByClassName("button");
   var y = document.getElementsByClassName("sale_btn");
   var z = document.getElementsByClassName("buy_btn");
   var i,j,k;
