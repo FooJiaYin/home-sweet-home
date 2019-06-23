@@ -292,7 +292,7 @@ fieldState.dead = function () {
     game.fieldBgm.stop();
     game.playerDie.play();
     game.time.events.add(2500, function () { 
-        this.removePlayer(this.player.id);
+        //this.removePlayer(this.player.id);
         Client.socket.close();
         game.homeBgm.play();
         game.state.start('home'); 
