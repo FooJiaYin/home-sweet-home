@@ -1,34 +1,24 @@
 //var livingForest, livingSnow, livingGrass, livingMine, livingBeach;
 var fieldState = { 
   preload: function() {
-    game.stage.disableVisibilityChange = true;
+    //game.stage.disableVisibilityChange = true;
   },
   create: function() {
     loadValues();
     Client.initState('field');
     var bag = document.getElementById("bag");
-    bag.style.left = "";
+    bag.style.left = "calc(50% - 130px)";
     bag.style.display = "none";
     var cra = document.getElementById("craft");
     cra.style.display = "none";
     this.bg = game.add.tileSprite(0, 0, 2000, 2000, 'field');
     game.world.setBounds(0, 0, 2000, 2000);
-    this.playing = 1;
-
-    /*this.borderH = 600;
-    this.borderV = 600;*/
+    this.moving = 1;
 
     //Sound
     this.enemyDieSnd = game.add.audio('enemyDieSnd');
     this.attackSnd = game.add.audio('attackSnd');
     this.shootSnd = game.add.audio('shootSnd');
-
-    /* this.woods = game.add.group();
-    this.woods.enableBody = true;
-    this.woods.createMultiple(30, 'wood');
-    this.woods.forEach(function(w) {
-      w.anchor.setTo(0.5, 0.5);
-    }, this); */
 
     var i = 0;
     this.attackCircleList = [];
@@ -44,18 +34,11 @@ var fieldState = {
     
     /* Enemies */
     i = 0;
-    this.keyB = game.input.keyboard.addKey(Phaser.Keyboard.B);
-    this.keyB.onDown.add(this.toMap, this);
     this.keyQ = game.input.keyboard.addKey(Phaser.Keyboard.Q);
     this.keyQ.onDown.add(this.swordA, this);
     this.keyW = game.input.keyboard.addKey(Phaser.Keyboard.W);
     this.keyW.onDown.add(this.arrowA, this);
     this.keyE = game.input.keyboard.addKey(Phaser.Keyboard.E);
-
-    /*this.genW = game.add.text(20, 20, 'W', { font: '40px Microsoft JhengHei', backgroundColor: 'white'});
-    this.genW.inputEnabled = true;
-    this.genW.fixedToCamera = true;
-    this.genW.events.onInputDown.add(this.genWood, this);*/    
     
     //石頭(all)、木材(forest)、冰(snow)、ㄇㄇ蟲(草地)、棉花(evil)、礦(evil)、貝殼(beach) )
     this.stones = game.add.group();
@@ -100,7 +83,7 @@ var fieldState = {
     this.snowlefts = game.add.group();
     this.snowlefts.enableBody = true;
     this.snowlefts.createMultiple(30, 'snowleft');
-    this.snowlefts.forEach(function(i) {i.name = "fur";}, this);
+    this.snowlefts.forEach(function(i) {i.name = "skull";}, this);
 
     this.minelefts = game.add.group();
     this.minelefts.enableBody = true;
@@ -110,7 +93,7 @@ var fieldState = {
     this.grasslefts = game.add.group();
     this.grasslefts.enableBody = true;
     this.grasslefts.createMultiple(30, 'grassleft');
-    this.grasslefts.forEach(function(i) {i.name = "meat";}, this);
+    this.grasslefts.forEach(function(i) {i.name = "flesh";}, this);
 
     this.beachlefts = game.add.group();
     this.beachlefts.enableBody = true;
@@ -312,21 +295,6 @@ var fieldState = {
     }, this);
     this.cursor = game.input.keyboard.createCursorKeys();
 
-    /*this.life = game.add.text(700, 20, 'HP: ' + game.global.hp, { font: '30px Arial'} );
-    this.life.fixedToCamera = true;
-    this.map = game.add.text(700, 400, '地圖', { font: '40px Microsoft JhengHei', backgroundColor: 'white'});
-    this.map.inputEnabled = true;
-    this.map.fixedToCamera = true;
-    this.map.events.onInputDown.add(this.toMap, this);
-    this.home = game.add.text(700, 460, '回家', { font: '40px Microsoft JhengHei', backgroundColor: 'white'});
-    this.home.inputEnabled = true;
-    this.home.fixedToCamera = true;
-    this.home.events.onInputDown.add(this.toHome, this);
-    this.bag = game.add.text(700, 520, '背包', { font: '40px Microsoft JhengHei', backgroundColor: 'white'});
-    this.bag.inputEnabled = true;
-    this.bag.fixedToCamera = true;
-    this.bag.events.onInputDown.add(this.openBag, this);*/
-
     ////enemy by shuling
     //enemy
     this.enemyBulletsList = [];
@@ -436,14 +404,13 @@ var fieldState = {
   }, 
   
   update: function() {
-    if(this.playing && this.player && this.player.body){
-      if(!this.player.freeze) this.movePlayer();
+    if(this.player && this.player.body){
+      if(this.moving) this.movePlayer();
       this.playerGroup.sort('y', Phaser.Group.SORT_ASCENDING);
       //this.enemyAlive();
       this.updateEnemyBlood();
       this.bulletBound();
       this.UIControl();
-      //this.updateText();
       //this.playerGroup.sort('y', Phaser.Group.SORT_ASCENDING);
       game.physics.arcade.collide(this.player, this.store_bd);
       game.physics.arcade.overlap(this.player, this.bridge_bd, this.toMap, null, this);
@@ -473,33 +440,21 @@ var fieldState = {
       game.physics.arcade.overlap(this.player, this.minelefts, this.pickUp, null, this);
       game.physics.arcade.overlap(this.player, this.beachlefts, this.pickUp, null, this);
       
-      /*game.physics.arcade.overlap(this.swords, this.twigs, this.attack_c, null, this);
-      game.physics.arcade.overlap(this.swords, this.whitewalkers, this.attack_c, null, this);
-      game.physics.arcade.overlap(this.swords, this.barbarians, this.attack_c, null, this);
-      game.physics.arcade.overlap(this.swords, this.stonemans, this.attack_c, null, this);
-      game.physics.arcade.overlap(this.swords, this.fishs, this.attack_c, null, this);
-
-      game.physics.arcade.overlap(this.swords_b, this.twigs, this.attack_c, null, this);
-      game.physics.arcade.overlap(this.swords_b, this.whitewalkers, this.attack_c, null, this);
-      game.physics.arcade.overlap(this.swords_b, this.barbarians, this.attack_c, null, this);
-      game.physics.arcade.overlap(this.swords_b, this.stonemans, this.attack_c, null, this);
-      game.physics.arcade.overlap(this.swords_b, this.fishs, this.attack_c, null, this);
-      */
     }
   },
-
-  /* Generate Materials */
-  /*genWood: function() {
-    var w = this.woods.getFirstExists(false);
-    if(w) w.reset(game.rnd.integerInRange(this.player.x-200, this.player.x+200), game.rnd.integerInRange(this.player.y-200, this.player.y+200));
-  },*/
   UIControl: function() {
     if(game.global.weed) this.lalala.alpha = 1;
-      else this.lalala.alpha = 0;
-      if(game.global.attup) this.power.alpha = 1;
-      else this.power.alpha = 0;
-      if(game.global.speup==2) this.fast.alpha = 1;
-      else this.fast.alpha = 0;
+    else this.lalala.alpha = 0;
+    if(game.global.attup) this.power.alpha = 1;
+    else this.power.alpha = 0;
+    if(game.global.speup==2) this.fast.alpha = 1;
+    else this.fast.alpha = 0;
+    if(this.moving&&(this.cursor.left.isDown||this.cursor.right.isDown||this.cursor.up.isDown||this.cursor.down.isDown)){
+      document.getElementById("bag").style.display = "none";
+      this.closeStore();
+    } 
+    this.lifetext.setText(game.global.hp+"/"+game.global.maxhp);
+    this.life.scale.setTo(game.global.hp/game.global.maxhp,1);
   },
 
   growElement: function() {    
@@ -577,14 +532,6 @@ var fieldState = {
     Client.socket.close();
     game.state.start('map'); 
   },
-  toHome: function() {
-    var bag = document.getElementById("bag");
-    bag.style.display = "none"; 
-    this.closeStore();
-    this.player.kill();
-    Client.socket.close();
-    game.state.start('home');  
-  },
   openBag: function() {
     console.log("open bag");
     var bag = document.getElementById("bag");
@@ -627,7 +574,7 @@ var fieldState = {
     money = 0;
     var bag = document.getElementById("bag");
     bag.style.display = "none"; 
-    bag.style.left = "-130px";
+    bag.style.left = "calc(50% - 130px)";
     var store = document.getElementById("store");
     store.style.display = "none"; 
     var x = document.getElementsByClassName("sale");
@@ -636,7 +583,7 @@ var fieldState = {
       x[i].innerHTML = -0;
       x[i].style.display = "none";
     }
-    var x = document.getElementsByClassName("button");
+    var x = document.getElementsByClassName("btn");
     var y = document.getElementsByClassName("sale_btn");
     var z = document.getElementsByClassName("buy_btn");
     var i,j,k;

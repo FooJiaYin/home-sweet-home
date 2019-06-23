@@ -22,14 +22,14 @@ var craft_tb = [
 
   {name:"table",src:["wood2",2]},
   {name:"table1",src:["iron2",2]},
-  {name:"seat",src:["cutton",6]},
+  {name:"seat",src:["cotton",6]},
   {name:"seat1",src:["shell2",2]},
   {name:"closet",src:["wood2",2,"shell",2]},
   {name:"closet1",src:["stone2",2,"skull",2]},
   {name:"bookshelf",src:["wood2",4]},
   {name:"bookshelf1",src:["stone2",4]},
-  {name:"bed",src:["wood",6,"cutton2",2]},
-  {name:"bed1",src:["skull",6,"cutton2",2]},
+  {name:"bed",src:["wood",6,"cotton2",2]},
+  {name:"bed1",src:["skull",6,"cotton2",2]},
   {name:"light",src:["iron2",2,"ice",4]},
   {name:"flower",src:["wood",4,"coal",2]},
   {name:"flower1",src:["wood",4,"iron",2]},
@@ -46,14 +46,20 @@ var money = 0;
 function setUpPlayer() {
   var w = document.getElementById("weapon");
   var c = document.getElementById("cloth");
-  if(game.global.weapon==2){
+  if(game.global.weapon==1){
+    w.innerHTML = "木劍";
+    game.global.attack = 1;
+  }else if(game.global.weapon==2){
     w.innerHTML = "鐵劍";
     game.global.attack = 2;
   }else if(game.global.weapon==3){
     w.innerHTML = "鑽劍";
     game.global.attack = 3;
   }
-  if(game.global.cloth==2){
+  if(game.global.cloth==1){
+    c.innerHTML = "皮革上衣";
+    game.global.maxhp = 20;
+  }else if(game.global.cloth==2){
     c.innerHTML = "鐵製護甲";
     game.global.maxhp = 25;
   }else if(game.global.cloth==3){
@@ -105,7 +111,10 @@ function craft(a) {
     for(i=0;i<l/2;i++){
       var s = document.getElementById(craft_tb[a].src[2*i]);
       s.innerHTML = Number(s.innerHTML)-craft_tb[a].src[2*i+1];
-    }
+    }    
+    game.homeBgm.pause();
+    game.time.events.add(2000, function() {game.homeBgm.resume();}, this);
+    game.craftsound.play();
   }
 }
 function separ(a) {
@@ -171,7 +180,7 @@ function closeStore() {
   money = 0;
   var bag = document.getElementById("bag");
   bag.style.display = "none"; 
-  bag.style.left = "";
+  bag.style.left = "calc(50% - 130px)";
   var store = document.getElementById("store");
   store.style.display = "none"; 
   var x = document.getElementsByClassName("sale");
@@ -228,12 +237,9 @@ function buy(a) {
   for (k = 0; k < z.length; k++) {
     z[k].disabled = true;
   }
-  var sound = document.getElementById("buysound");
-  var currentTime = sound.currentTime;
-  var duration = sound.duration;
-  if (currentTime <= 0 || currentTime == duration) {
-    sound.play();
-  }
+  game.fieldBgm.pause();
+  game.time.events.add(2000, function() {game.fieldBgm.resume();}, this);
+  game.buysound.play();
   saveState();
   closeStore();
 }

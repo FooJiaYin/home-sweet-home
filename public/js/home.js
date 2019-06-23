@@ -14,12 +14,11 @@ var homeState = {
     var bag = document.getElementById("bag");
     bag.style.display = "none";
     bag.style.left = "calc(50% - 260px)";
+    var cra = document.getElementById("craft");
+    cra.style.display = "none";
     this.decorating = 0;
 
     this.bg = game.add.tileSprite(0, 0, game.width, game.height, 'home');
-    /*this.packing = game.add.sprite(10, 10, 'packing');
-    this.packing.visible = false;*/
-
     this.map = game.add.button(330, 110, 'GoMap', this.toMap, this);
     this.map.alpha = 0;
     game.carpet = game.add.sprite(84, 312, 'carpet');
@@ -58,26 +57,10 @@ var homeState = {
     this.player.body.collideWorldBounds = true;
 
     this.cursor = game.input.keyboard.createCursorKeys();
-
-    /*this.life = game.add.text(700, 20, 'HP:20', { font: '30px Arial'} );
-    this.field = game.add.text(700, 340, '冒險', { font: '40px Microsoft JhengHei', backgroundColor: 'white'});
-    this.field.inputEnabled = true;
-    this.field.events.onInputDown.add(this.toField, this);
-    this.map = game.add.text(700, 400, '地圖', { font: '40px Microsoft JhengHei', backgroundColor: 'white'});
-    this.map.inputEnabled = true;
-    this.map.events.onInputDown.add(this.toMap, this);
-    this.crafts = game.add.text(700, 80, '合成', { font: '40px Microsoft JhengHei', backgroundColor: 'white'});
-    this.crafts.inputEnabled = true;
-    this.crafts.events.onInputDown.add(this.openCraft, this);
-    this.storage = game.add.text(700, 140, '倉庫', { font: '40px Microsoft JhengHei', backgroundColor: 'white'});
-    this.storage.inputEnabled = true;
-    this.storage.events.onInputDown.add(this.openStorage, this);
-    */
   }, 
   update: function() {
     if(this.decorating==0) this.movePlayer();
     this.updateText();
-    //game.physics.arcade.overlap(this.packing, game.items, this.store, null, this);
     game.items.sort('y', Phaser.Group.SORT_ASCENDING);
   },
   bound: function(player,item) {
@@ -149,7 +132,6 @@ var homeState = {
     this.down = 1;
   },
   updateText: function() {
-    //this.life.setText("HP:" + game.global.hp);
     this.lifetext.setText(game.global.hp+"/"+game.global.maxhp);
     this.life.scale.setTo(game.global.hp/game.global.maxhp,1);
   },
@@ -177,7 +159,8 @@ var homeState = {
     }
   },
   toMap: function() {
-    //this.packing.visible = false;
+    game.homeBgm.stop();
+    game.fieldBgm.play();
     var sto = document.getElementById("sto");
     sto.style.display = "none";
     var bag = document.getElementById("bag");
@@ -187,24 +170,12 @@ var homeState = {
     this.check();
     game.state.start('map'); 
   },
-  /*toField: function() {
-    this.packing.visible = false;
-    var sto = document.getElementById("sto");
-    sto.style.display = "none";
-    var bag = document.getElementById("bag");
-    bag.style.display = "none";
-    var cra = document.getElementById("craft");
-    cra.style.display = "none";
-    this.check();
-    game.state.start('field');  
-  },*/
   openStorage: function() {
     var sto = document.getElementById("sto");
     if(sto.style.display == "none"){
       sto.style.display = "block"; 
       this.storage.frame = 1; 
       this.player.visible = false;
-      //this.packing.visible = true;
       this.decorating = 1;
       game.items.forEachExists(function(i) {
         if(i.type!="player"){
@@ -217,7 +188,6 @@ var homeState = {
       sto.style.display = "none";
       this.storage.frame = 0; 
       this.player.visible = true;
-      //this.packing.visible = false;
       this.decorating = 0;
       this.check();
     }
@@ -225,7 +195,7 @@ var homeState = {
   openCraft: function() {
     var bag = document.getElementById("bag");
     var cra = document.getElementById("craft");
-    if(bag.style.display == "none"){
+    if(cra.style.display == "none"){
       bag.style.display = "block"; 
       cra.style.display = "block"; 
     }else{

@@ -85,11 +85,10 @@ var loadState = {
     game.load.image('grassBullet', 'assets/drops/meat.png');
     game.load.image('mineBullet', 'assets/drops/cotton.png');//0621
     game.load.image('beachBullet', 'assets/drops/weed.png');
-    game.load.image('snowleft', 'assets/drops/fur.png');
+    game.load.image('snowleft', 'assets/drops/skull.png');
     game.load.image('forestleft', 'assets/drops/coal.png');
     game.load.image('mineleft', 'assets/drops/cotton.png');//0621
     game.load.image('grassleft', 'assets/drops/meat.png');
-    game.load.image('beachleft', 'assets/drops/weed.png');
     game.load.image('beachleft', 'assets/drops/weed.png');
 
     //sound effects
@@ -102,11 +101,15 @@ var loadState = {
     game.load.audio('weedBgm', 'assets/soundEffect/weedBgm.mp3');
     game.load.audio('shopWelcome', 'assets/soundEffect/shopWelcome.mp3');
     game.load.audio('playerDie', 'assets/soundEffect/playerDie.mp3');
+    game.load.audio('cashier', 'assets/soundEffect/cashier.mp3');
+    game.load.audio('craft', 'assets/soundEffect/makeWeapon.mp3');
   }, 
   create: function() { 
     game.shopWelcome = game.add.audio('shopWelcome', 0.4, false);
     game.playerDie = game.add.audio('playerDie', 0.6, false);
     game.weedBgm = game.add.audio('weedBgm', 0.5, false);
+    game.buysound = game.add.audio('cashier', 0.8, false);
+    game.craftsound = game.add.audio('craft', 0.8, false);
     game.homeBgm = game.add.audio('homeBgm', 0.5, true);
     game.fieldBgm = game.add.audio('fieldBgm', 0.5, true);
     game.fieldBgm.play();
