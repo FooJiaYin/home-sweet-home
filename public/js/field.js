@@ -276,6 +276,17 @@ var fieldState = {
     this.bridge_bd.scale.setTo(1,0.01);
     this.bridge_bd.enableBody = true;
     game.physics.arcade.enable(this.bridge_bd);
+    
+    this.arrows = game.add.group();
+    this.arrows.enableBody = true;
+    this.arrows.createMultiple(100, 'arrow');
+    this.arrows.setAll('outOfBoundsKill', true);
+    this.arrows.setAll('checkWorldBounds', true);
+    this.arrows.setAll('checkWorldBounds', true);
+    this.arrows.forEach(function(a) {
+      a.anchor.setTo(0.5, 0.5);
+      a.kill();
+    }, this);
 
     this.playersList = [];
     this.playerGroup = game.add.group();
@@ -300,16 +311,6 @@ var fieldState = {
       a.kill();
     }, this); 
 
-    this.arrows = game.add.group();
-    this.arrows.enableBody = true;
-    this.arrows.createMultiple(100, 'arrow');
-    this.arrows.setAll('outOfBoundsKill', true);
-    this.arrows.setAll('checkWorldBounds', true);
-    this.arrows.setAll('checkWorldBounds', true);
-    this.arrows.forEach(function(a) {
-      a.anchor.setTo(0.5, 0.5);
-      a.kill();
-    }, this);
     this.cursor = game.input.keyboard.createCursorKeys();
 
     /*this.life = game.add.text(700, 20, 'HP: ' + game.global.hp, { font: '30px Arial'} );

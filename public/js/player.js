@@ -7,6 +7,7 @@ fieldState.setPlayerId = function (newId) {
 fieldState.addNewPlayer = function (id, x, y, skin) {
     if (skin == 1) this.playersList[id] = game.add.sprite(x, y, 'player');
     this.playersList[id].scale.setTo(0.6, 0.6); 
+    this.playersList[id].anchor.setTo(0.5, 0.5); 
     this.playersList[id].id = id;
     this.playersList[id].freeze = false;
     this.playersList[id].animations.add('goforward', [20, 21], 4, true);
@@ -135,7 +136,7 @@ fieldState.pickUp = function (player, item) {
 }
 
 fieldState.swordA = function () {
-    this.showSword(this.player);
+    this.showSword(this.player, game.global.weapon);
     //console.log(this.player.freeze);
     Client.sword(game.global.weapon);
 }
@@ -146,9 +147,9 @@ fieldState.showSword = function (player, weapon) {
         this.playersList[player.id].frame = 17;
         sword = this.swords.getFirstDead();
         //sword.frame = 0;
-        sword.reset(player.x - 20, player.y + 28);
-        sword.x = player.x - 20;
-        sword.y = player.y + 28;
+        sword.reset(player.x - 43, player.y - 28);
+        sword.x = player.x - 43;
+        sword.y = player.y - 28;
         if(weapon==1) sword.animations.play('attleft');
         else if(weapon==2) sword.animations.play('attleft2');
         else sword.animations.play('attleft3');
@@ -169,11 +170,11 @@ fieldState.showSword = function (player, weapon) {
         sword.y = player.y - 28;
         sword.animations.play('attright');
     */} else {
-        this.playersList[player.id].frame = 16;
+        this.playersList[player.id].frame = 15;
         sword = this.swords_b.getFirstDead();
-        sword.reset(player.x + 35, player.y + 28);
-        sword.x = player.x + 35;
-        sword.y = player.y + 28;
+        sword.reset(player.x - 5, player.y - 28);
+        sword.x = player.x - 5;
+        sword.y = player.y - 28;
         if(weapon==1) sword.animations.play('attright');
         else if(weapon==2) sword.animations.play('attright2');
         else sword.animations.play('attright3');
