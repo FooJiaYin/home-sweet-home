@@ -174,8 +174,8 @@ fieldState.showSword = function (player, weapon) {
         sword.reset(player.x + 35, player.y + 28);
         sword.x = player.x + 35;
         sword.y = player.y + 28;
-        if(player.weapon==1) sword.animations.play('attright');
-        else if(player.weapon==2) sword.animations.play('attright2');
+        if(weapon==1) sword.animations.play('attright');
+        else if(weapon==2) sword.animations.play('attright2');
         else sword.animations.play('attright3');
     }
     game.physics.arcade.enable(sword);

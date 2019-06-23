@@ -609,7 +609,7 @@ var fieldState = {
       x[i].style.display = "inline";
     }
     var x = document.getElementsByClassName("sale_btn");
-    var y = document.getElementsByClassName("btn");
+    var y = document.getElementsByClassName("button");
     var z = document.getElementsByClassName("buy_btn");
     var i,j,k;
     for (i = 0; i < x.length; i++) {
