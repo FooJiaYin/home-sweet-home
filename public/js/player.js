@@ -54,22 +54,22 @@ fieldState.movePlayer = function () {
     else if (this.cursor.left.isDown){
         this.player.facing = 1;
         this.player.animations.play('goleft');
-        this.closeStore();
+        //this.closeStore();
     } 
     else if (this.cursor.right.isDown){
         this.player.facing = 2;
         this.player.animations.play('goright');
-        this.closeStore();
+        //this.closeStore();
     } 
     else if (this.cursor.up.isDown){
         this.player.facing = 3;
         this.player.animations.play('gobackward');
-        this.closeStore();
+        //this.closeStore();
     } 
     else if (this.cursor.down.isDown){
         this.player.facing = 0;
         this.player.animations.play('goforward');
-        this.closeStore();
+        //this.closeStore();
     }
   
     if (((!game.global.weed&&this.cursor.left.isDown) || (game.global.weed&&this.cursor.right.isDown))&&this.player.x>100) {
@@ -294,6 +294,7 @@ fieldState.dead = function () {
     game.fieldBgm.stop();
     game.playerDie.play();
     game.time.events.add(2500, function () { 
+        this.removePlayer(this.player.id);
         Client.socket.close();
         game.state.start('home'); 
     }, this);
