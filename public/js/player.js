@@ -185,12 +185,12 @@ fieldState.showSword = function (player, weapon) {
     this.playersList[player.id].freeze = true;
     
     sword.animations.currentAnim.onComplete.add(function () {
+        game.physics.arcade.overlap(sword, this.twigs, this.attack_c, null, this);
+        game.physics.arcade.overlap(sword, this.whitewalkers, this.attack_c, null, this);
+        game.physics.arcade.overlap(sword, this.barbarians, this.attack_c, null, this);
+        game.physics.arcade.overlap(sword, this.stonemans, this.attack_c, null, this);
+        game.physics.arcade.overlap(sword, this.fishs, this.attack_c, null, this);
         sword.kill();
-        game.physics.arcade.overlap(this.sword, this.twigs, this.attack_c, null, this);
-        game.physics.arcade.overlap(this.sword, this.whitewalkers, this.attack_c, null, this);
-        game.physics.arcade.overlap(this.sword, this.barbarians, this.attack_c, null, this);
-        game.physics.arcade.overlap(this.sword, this.stonemans, this.attack_c, null, this);
-        game.physics.arcade.overlap(this.sword, this.fishs, this.attack_c, null, this);
         this.playersList[player.id].freeze = false;
     }, this);
 }

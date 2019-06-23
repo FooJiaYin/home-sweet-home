@@ -473,7 +473,7 @@ var fieldState = {
       game.physics.arcade.overlap(this.player, this.minelefts, this.pickUp, null, this);
       game.physics.arcade.overlap(this.player, this.beachlefts, this.pickUp, null, this);
       
-      game.physics.arcade.overlap(this.swords, this.twigs, this.attack_c, null, this);
+      /*game.physics.arcade.overlap(this.swords, this.twigs, this.attack_c, null, this);
       game.physics.arcade.overlap(this.swords, this.whitewalkers, this.attack_c, null, this);
       game.physics.arcade.overlap(this.swords, this.barbarians, this.attack_c, null, this);
       game.physics.arcade.overlap(this.swords, this.stonemans, this.attack_c, null, this);
@@ -484,7 +484,7 @@ var fieldState = {
       game.physics.arcade.overlap(this.swords_b, this.barbarians, this.attack_c, null, this);
       game.physics.arcade.overlap(this.swords_b, this.stonemans, this.attack_c, null, this);
       game.physics.arcade.overlap(this.swords_b, this.fishs, this.attack_c, null, this);
-      
+      */
     }
   },
 

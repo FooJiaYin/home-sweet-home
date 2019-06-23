@@ -331,6 +331,7 @@ fieldState.attack_c = function (weapon, monster) {
     }
     if (monster.blood <= 0) {
         this.monsterDie(monster.x, monster.y, monster.type);
+        this.removeEnemy(monster.id);
         Client.killEnemy(monster.id);
     }
     else Client.moveEnemy(monster.id, monster.x, monster.y, monster.blood/*, monster.animations.currentAnim.name, monster.facing*/);
@@ -346,7 +347,7 @@ fieldState.attack_f = function (weapon, monster) {
     }
     if (monster.blood <= 0) {
         this.monsterDie(monster.x, monster.y, monster.type);
-        //this.removeEnemy(monster.id);
+        this.removeEnemy(monster.id);
         Client.killEnemy(monster.id);
     }
     else Client.moveEnemy(monster.id, monster.x, monster.y, monster.blood/*, monster.animations.currentAnim.name, monster.facing*/);
@@ -356,8 +357,7 @@ fieldState.attack_f = function (weapon, monster) {
 fieldState.monsterDie = function (x, y, type) {
     this.enemyDieSnd.play();
     var ghost = this.ghosts.getFirstExists(false);
-    ghost.x = x;
-    ghost.y = y;
+    ghost.reset(x, y);
     ghost.body.velocity.x = 0;
     ghost.body.velocity.y = -120;
     ghost.alpha = 1;
