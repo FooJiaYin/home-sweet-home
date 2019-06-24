@@ -156,7 +156,7 @@ fieldState.moveEnemy = function () {
                     target = this.playersList[j];
                 }
             }
-            if (target) {//(this.distance(this.player, this.enemies[i]) < 300) && (this.player, this.distance(this.enemies[i]) > 150)) {
+            if (target && minDist > 3) {//(this.distance(this.player, this.enemies[i]) < 300) && (this.player, this.distance(this.enemies[i]) > 150)) {
                 //console.log('move', this.distance(this.enemies[i]));
                 var dx = target.x - this.enemies[i].body.x;
                 var dy = target.y - this.enemies[i].body.y;
