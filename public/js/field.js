@@ -429,7 +429,7 @@ var fieldState = {
     this.power.alpha = 1;
 
     //loop
-    game.time.events.loop(100, this.moveEnemy, this);
+    game.time.events.loop(200, this.moveEnemy, this);
     //game.time.events.loop(50, this.enemyAttack, this);
     game.time.events.loop(700, this.enemyShoot, this);
     game.time.events.loop(8000, this.generateEnemy, this);

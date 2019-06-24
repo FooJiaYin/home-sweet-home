@@ -131,22 +131,20 @@ fieldState.updateEnemyLabel = function () {
 
 // phaser time loop >> phaser & server
 fieldState.moveEnemy = function () {
-    console.log('me1');
     if(!this.enemies) return;
     for (var i = 0; i < this.enemies.length; i++) {
         if(this.enemies[i] && this.enemies[i].alive) { 
-            console.log('me2');
             // aim the nearest player in its range
             var target = null;
             var minDist = 100000;
             for (var j = 0; j < this.playersList.length; j++) {
                 console.log(this.enemies[i]);
-                if (this.playersList[i].alive && !this.enemyBound(this.enemies[i], this.playersList[j]) && this.distance(this.playersList[j], this.enemies[i]) < minDist) {
+                if (this.playersList[j] && this.playersList[j].alive && !this.enemyBound(this.enemies[i], this.playersList[j]) && this.distance(this.playersList[j], this.enemies[i]) < minDist) {
                     minDist = this.distance(this.playersList[j], this.enemies[i]);
                     target = this.playersList[j];
                 }
             }
-            if (target && minDist > 3) {//(this.distance(this.player, this.enemies[i]) < 300) && (this.player, this.distance(this.enemies[i]) > 150)) {
+            if (target) {//(this.distance(this.player, this.enemies[i]) < 300) && (this.player, this.distance(this.enemies[i]) > 150)) {
                 //console.log('move', this.distance(this.enemies[i]));
                 var dx = target.x - this.enemies[i].body.x;
                 var dy = target.y - this.enemies[i].body.y;
@@ -242,9 +240,8 @@ fieldState.enemyShoot = function () {
     var target = null;
     var minDist = 350;
     for (var j = 0; j < this.playersList.length; j++) {
-        console.log(this.enemies[i]);
-        if (this.distance(this.playersList[j], this.enemies[i]) < minDist) {
-            minDist = this.distance(this.playersList[j], this.enemies[i]);
+        if (this.distance(this.playersList[j], shooter) < minDist) {
+            minDist = this.distance(this.playersList[j], shooter);
             target = this.playersList[j];
         }
     }

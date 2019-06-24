@@ -179,7 +179,7 @@ function setFirstSocket(id) {
         targetEnemy.blood = data.blood;
         targetEnemy.animation = data.animation;
         targetEnemy.frame = data.frame;
-        io.emit('updateEnemy', data);
+        firstSocket.broadcast.emit('updateEnemy', data);
     });
 
     firstSocket.on('outOfBoundsKillBullet', function(id) {
