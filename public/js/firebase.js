@@ -76,6 +76,12 @@ loadValues = async function() {
         game.global.weed = snapshot.val().weed;
         game.global.attup = snapshot.val().attup;
         game.global.speup = snapshot.val().speup;
+        if(game.global.weapon==1) game.global.attack=2;
+        else if(game.global.weapon==2) game.global.attack=4;
+        else game.global.attack=8;
+        if(game.global.cloth==1) game.global.maxhp=2;
+        else if(game.global.cloth==2) game.global.maxhp=30;
+        else game.global.maxhp=40;
     });
     firebase.database().ref('profile/' + userId + '/home/furniture').once('value', function(snapshot) {
         console.log("load furniture");
