@@ -79,7 +79,7 @@ loadValues = async function() {
         if(game.global.weapon==1) game.global.attack=2;
         else if(game.global.weapon==2) game.global.attack=4;
         else game.global.attack=8;
-        if(game.global.cloth==1) game.global.maxhp=2;
+        if(game.global.cloth==1) game.global.maxhp=20;
         else if(game.global.cloth==2) game.global.maxhp=30;
         else game.global.maxhp=40;
     });
