@@ -42,7 +42,7 @@ Client.generateBullet = function(x, y, velocityX, velocityY, type) {
 Client.killBullet = function(id, reason) {
     if(reason =="hit") Client.socket.emit('killBullet', id);
     else if(reason=="OutOfBounds") Client.socket.emit('outOfBoundsKillBullet', id);
-    console.log("killBullet:", reason);
+    //console.log("killBullet:", reason);
 }
 
 Client.sword = function(weapon) {
@@ -132,7 +132,7 @@ Client.socket.on('removeEnemy', function(id) {
 Client.socket.on('addBullet', function(data) {
     if(Client.gameState == 'field')
         fieldState.addBullet(data.id, data.x, data.y, data.velocityX, data.velocityY, data.type);
-    console.log("addBullet", data.id);
+    //console.log("addBullet", data.id);
 });
 
 Client.socket.on('removeBullet', function(id) {

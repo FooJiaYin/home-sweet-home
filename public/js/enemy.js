@@ -257,7 +257,7 @@ fieldState.distance = function (target, shooter) {
 
 // server >> phaser
 fieldState.addBullet = function (id, x, y, velocityX, velocityY, type) {
-    console.log("addBullet", id);
+    //console.log("addBullet", id);
     switch (type) {
         case 'forest':
             this.enemyBulletsList[id] = this.forestBullets.getFirstExists(false);

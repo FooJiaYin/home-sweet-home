@@ -19,8 +19,9 @@ app.get('/game.html', function(req, res) {
     res.sendFile(__dirname + '/public/game.html');
 });*/
 
-server.firstSocketID = 0;
+//server.firstSocketID = 0;
 server.lastSessionID = 0;
+server.alive = [];
 server.enemies = [];
 server.bullets = [];
 
@@ -43,8 +44,12 @@ io.on('connection', function(socket) {
         //else setFirstSocket(Object.keys(io.sockets.connected)[0]);
 
         if(state == 'field') {
+            for(lastSessionID=0; lastSessionID<server.alive.length; lastSessionID++) {
+                if(server.alive[lastSessionID] == false) break;
+            }
+            server.alive[lastSessionID] == true;
             socket.player = {
-                id: server.lastSessionID++,
+                id: lastSessionID++,
                 x: 190,
                 y: 1040,
                 skin: 1,
@@ -76,6 +81,7 @@ io.on('connection', function(socket) {
         });
 
         socket.on('disconnect', function() {
+            server.alive[socket.player.id] = false;
             io.emit('removePlayer', socket.player.id);
             if(server.firstSocketID == socket.id) {
                 if(Object.keys(io.sockets.connected)[0])
@@ -126,7 +132,7 @@ function getAllPlayers() {
     var players = [];
     Object.keys(io.sockets.connected).forEach(function(socketID) {
         var player = io.sockets.connected[socketID].player;
-        if (player) players.push(player);
+        if (player) players[player.id] = player;
     });
     return players;
 }
