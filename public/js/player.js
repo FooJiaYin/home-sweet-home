@@ -30,6 +30,17 @@ fieldState.addNewPlayer = function (id, x, y, skin) {
 
 fieldState.updatePlayer = function (id, x, y, animation, facing) {
     if(!this.playersList[id]) return;
+    /*var dx = this.playersList[id].x - x;
+    var dy = this.playersList[id].y - y;
+    var dist = Math.sqrt(dx * dx + dy * dy);
+    if(dist > 2) {
+        this.playersList[id].body.velocity.x = dx*400/dist;
+        this.playersList[id].body.velocity.y = dy*400/dist;
+    }
+    else {
+        this.playersList[id].body.velocity.x = 0;
+        this.playersList[id].body.velocity.y = 0;
+    }*/
     this.playersList[id].x = x;
     this.playersList[id].y = y;
     this.playersList[id].facing = facing;

@@ -8,6 +8,7 @@ var enemyPos = [{ x: 255, y: 655 }, { x: 631, y: 439 },     //twigPos
 
 // first socket phaser time loop >> server
 fieldState.generateEnemy = function () {
+    if(!this.firstSocket) return;
     this.genEnemyTime++;
     for (var i = 0; i < this.enemies.length - 1; i++) {
         if (this.enemies[i] && this.enemies[i].alive == false) {
@@ -48,6 +49,17 @@ fieldState.addEnemy = function (id, x, y, blood) {
 
 // server >> phaser
 fieldState.updateEnemy = function (id, x, y, blood, animation, frame) {
+    /*var dx = this.enemies[id].x - x;
+    var dy = this.enemies[id].y - y;
+    var dist = Math.sqrt(dx * dx + dy * dy);
+    if(dist > 2) {
+        this.enemies[id].body.velocity.x = dx*300/dist;
+        this.enemies[id].body.velocity.y = dy*300/dist;
+    }
+    else {
+        this.enemies[id].body.velocity.x = 0;
+        this.enemies[id].body.velocity.y = 0;
+    }*/
     this.enemies[id].x = x;
     this.enemies[id].y = y;
     this.enemies[id].blood = blood;
@@ -129,16 +141,16 @@ fieldState.updateEnemyLabel = function () {
     }
 }
 
-// phaser time loop >> phaser & server
+// first socket phaser >> server
 fieldState.moveEnemy = function () {
-    if(!this.enemies) return;
+    if(!this.enemies || !this.firstSocket) return;
     for (var i = 0; i < this.enemies.length; i++) {
         if(this.enemies[i] && this.enemies[i].alive) { 
             // aim the nearest player in its range
             var target = null;
             var minDist = 100000;
             for (var j = 0; j < this.playersList.length; j++) {
-                console.log(this.enemies[i]);
+                //console.log(this.enemies[i]);
                 if (this.playersList[j] && this.playersList[j].alive && !this.enemyBound(this.enemies[i], this.playersList[j]) && this.distance(this.playersList[j], this.enemies[i]) < minDist) {
                     minDist = this.distance(this.playersList[j], this.enemies[i]);
                     target = this.playersList[j];
@@ -224,6 +236,7 @@ fieldState.enemyBound = function (monster, target) {
 
 // first socket phaser >> server
 fieldState.enemyShoot = function () {
+    if(!this.firstSocket) return;
     var range = 350;
     var random;
 
@@ -303,31 +316,41 @@ fieldState.addBullet = function (id, x, y, velocityX, velocityY, type) {
 
 fieldState.bulletBound = function () {
     this.forestBullets.forEachAlive(function (b) {
-        if (!(b.position.x < 1557 && b.position.y < 1013 && b.position.y < ((-1013 * b.position.x / 1557) + 1013)))
+        if (!(b.position.x < 1557 && b.position.y < 1013 && b.position.y < ((-1013 * b.position.x / 1557) + 1013))) {
             b.kill();
+            Client.killBullet(b.id, "OutOfBounds");
+        }
     });
     this.snowBullets.forEachAlive(function (b) {
         if (!(b.position.x > 1200 && b.position.y < 600) &&
-            !(b.position.x < 2000 && b.position.y > 600 && b.position.y < 0.5 * b.position.x))
-            b.kill();
+            !(b.position.x < 2000 && b.position.y > 600 && b.position.y < 0.5 * b.position.x)) {
+            b.kill()
+            Client.killBullet(b.id, "OutOfBounds");
+        }
     });
     this.grassBullets.forEachAlive(function (b) {
-        if (!(b.position.y > -0.358 * b.position.x + 804.5 && b.position.y > 0.47 * b.position.x + 54.3 && b.position.y < -0.57 * b.position.x + 1920 && b.position.y < 0.91 * b.position.x + 680.25))
-            b.kill();
+        if (!(b.position.y > -0.358 * b.position.x + 804.5 && b.position.y > 0.47 * b.position.x + 54.3 && b.position.y < -0.57 * b.position.x + 1920 && b.position.y < 0.91 * b.position.x + 680.25)){
+            b.kill()
+            Client.killBullet(b.id, "OutOfBounds");
+        }
     });
     this.mineBullets.forEachAlive(function (b) {
-        if (!(b.position.y < 0.2 * b.position.x + 1274 && b.position.y > -0.57 * b.position.x + 1918.09 && b.position.y > 0.66 * b.position.x - 281))
-            b.kill();
+        if (!(b.position.y < 0.2 * b.position.x + 1274 && b.position.y > -0.57 * b.position.x + 1918.09 && b.position.y > 0.66 * b.position.x - 281)){
+            b.kill()
+            Client.killBullet(b.id, "OutOfBounds");
+        }
     });
     this.beachBullets.forEachAlive(function (b) {
-        if (!(b.position.y > -0.27 * b.position.x && b.position.y > 0.2 * b.position.x + 1276))
-            b.kill();
+        if (!(b.position.y > -0.27 * b.position.x && b.position.y > 0.2 * b.position.x + 1276)){
+            b.kill()
+            Client.killBullet(b.id, "OutOfBounds");
+        }
     });
 }
 
 // server >> phaser
 fieldState.removeBullet = function (id) {
-    this.bullets[id].kill();
+    this.enemyBulletsList[id].kill();
 }
 
 /* Attacked and Killed */

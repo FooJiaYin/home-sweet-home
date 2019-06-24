@@ -5,6 +5,7 @@ var fieldState = {
   },
   create: function() {
     loadValues();
+    this.firstSocket = false;
     this.playersList = [];
     Client.initState('field');
     var bag = document.getElementById("bag");
@@ -429,7 +430,7 @@ var fieldState = {
     this.power.alpha = 1;
 
     //loop
-    game.time.events.loop(200, this.moveEnemy, this);
+    //game.time.events.loop(50, this.moveEnemy, this);
     //game.time.events.loop(50, this.enemyAttack, this);
     game.time.events.loop(700, this.enemyShoot, this);
     game.time.events.loop(8000, this.generateEnemy, this);
@@ -441,6 +442,7 @@ var fieldState = {
       if(!this.player.freeze) this.movePlayer();
       this.playerGroup.sort('y', Phaser.Group.SORT_ASCENDING);
       //this.enemyAlive();
+      this.moveEnemy();
       this.updateEnemyBlood();
       this.bulletBound();
       this.UIControl();

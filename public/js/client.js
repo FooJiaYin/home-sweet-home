@@ -65,6 +65,8 @@ Client.socket.on('getconnected', function(data) {
 
 Client.socket.on('firstSocket', function(data) {
     console.log(data.id1, data.id2);
+    if(data.id1 == data.id2) fieldState.firstSocket = true;
+    else fieldState.firstSocket = false;
 });
 
 Client.socket.on('playerId', function(id) {
