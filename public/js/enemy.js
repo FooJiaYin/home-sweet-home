@@ -131,60 +131,74 @@ fieldState.updateEnemyLabel = function () {
 
 // phaser time loop >> phaser & server
 fieldState.moveEnemy = function () {
+    console.log('me1');
+    if(!this.enemies) return;
     for (var i = 0; i < this.enemies.length; i++) {
-        if (this.enemies[i] && this.enemies[i].alive && !this.enemyBound(this.enemies[i]) && this.distance(this.player, this.enemies[i]) > 50) {//(this.distance(this.player, this.enemies[i]) < 300) && (this.player, this.distance(this.enemies[i]) > 150)) {
-            //console.log('move', this.distance(this.enemies[i]));
-            var dx = this.player.x - this.enemies[i].body.x;
-            var dy = this.player.y - this.enemies[i].body.y;
-            var dist = this.distance(this.player, this.enemies[i]);
-            dx = dx / dist;
-            dy = dy / dist;
-            this.enemies[i].body.velocity.x = dx * 150;
-            this.enemies[i].body.velocity.y = dy * 150;
-
-            var frame = this.enemies[i].frame;
-            var animation = (this.enemies[i].animations.currentAnim) ? this.enemies[i].animations.currentAnim.name : null;
-            if (this.enemies[i].type == 'snow') {
-                frame = (dx > 0) ? 7 : 0;
-                animation = (dx > 0) ? 'attackR' : 'attackL';
+        if(this.enemies[i] && this.enemies[i].alive) { 
+            console.log('me2');
+            // aim the nearest player in its range
+            var target = null;
+            var minDist = 100000;
+            for (var j = 0; j < this.playersList.length; j++) {
+                console.log(this.enemies[i]);
+                if (this.playersList[i].alive && !this.enemyBound(this.enemies[i], this.playersList[j]) && this.distance(this.playersList[j], this.enemies[i]) < minDist) {
+                    minDist = this.distance(this.playersList[j], this.enemies[i]);
+                    target = this.playersList[j];
+                }
             }
-            else if (this.enemies[i].type == 'grass' && this.distance(this.player, this.enemies[i]) < 150 && this.enemies[i].notattacked < 5) {
-                animation = 'attack';
-            }
-            else if (dx < 0) animation = 'walkL';
-            else animation = 'walkR';
-            frame = (dx > 0) ? 2 : 0;
+            if (target && minDist > 3) {//(this.distance(this.player, this.enemies[i]) < 300) && (this.player, this.distance(this.enemies[i]) > 150)) {
+                //console.log('move', this.distance(this.enemies[i]));
+                var dx = target.x - this.enemies[i].body.x;
+                var dy = target.y - this.enemies[i].body.y;
+                var dist = this.distance(target, this.enemies[i]);
+                dx = dx / dist;
+                dy = dy / dist;
+                this.enemies[i].body.velocity.x = dx * 150;
+                this.enemies[i].body.velocity.y = dy * 150;
 
-            // update local and server 
-            this.updateEnemy(this.enemies[i].id, this.enemies[i].x, this.enemies[i].y, this.enemies[i].blood, animation, frame);
-            Client.moveEnemy(this.enemies[i].id, this.enemies[i].x, this.enemies[i].y, this.enemies[i].blood, animation, frame);
-        }
-        else if (this.enemies[i]) {
-            this.enemies[i].body.velocity.x = 0;
-            this.enemies[i].body.velocity.y = 0;
+                var frame = this.enemies[i].frame;
+                var animation = (this.enemies[i].animations.currentAnim) ? this.enemies[i].animations.currentAnim.name : null;
+                if (this.enemies[i].type == 'snow') {
+                    frame = (dx > 0) ? 7 : 0;
+                    animation = (dx > 0) ? 'attackR' : 'attackL';
+                }
+                else if (this.enemies[i].type == 'grass' && this.distance(this.player, this.enemies[i]) < 150 && this.enemies[i].notattacked < 5) {
+                    animation = 'attack';
+                }
+                else if (dx < 0) animation = 'walkL';
+                else animation = 'walkR';
+                frame = (dx > 0) ? 2 : 0;
+
+                // update server 
+                Client.moveEnemy(this.enemies[i].id, this.enemies[i].x, this.enemies[i].y, this.enemies[i].blood, animation, frame);
+            }
+            else if (this.enemies[i]) {
+                this.enemies[i].body.velocity.x = 0;
+                this.enemies[i].body.velocity.y = 0;
+            }
         }
     }
 }
 
-fieldState.enemyBound = function (monster) {
+fieldState.enemyBound = function (monster, target) {
     switch (monster.type) {
         case "forest":
-            if (!(this.player.x < 1457 && this.player.y < 1013 && this.player.y > 139 &&
-                this.player.y < ((-1013 * this.player.x / 1457) + 1013)))
+            if (!(target.x < 1457 && target.y < 1013 && target.y > 139 &&
+                target.y < ((-1013 * target.x / 1457) + 1013)))
                 return 1;
             else return 0;
             break;
         case "snow":
-            if (!(this.player.x > 1200 && this.player.y < 600 && this.player.y > 139) &&
-                !(this.player.x < 2000 && this.player.y > 600 && this.player.y < 0.5 * this.player.x))
+            if (!(target.x > 1200 && target.y < 600 && target.y > 139) &&
+                !(target.x < 2000 && target.y > 600 && target.y < 0.5 * target.x))
                 return 1;
             else return 0;
             break;
         case "grass":
-            if (!(this.player.y > -0.358 * this.player.x + 804.5 &&
-                this.player.y > 0.47 * this.player.x + 54.3 &&
-                this.player.y < -0.57 * this.player.x + 1920 &&
-                this.player.y < 0.91 * this.player.x + 680.25) || monster.notattacked == 5) {
+            if (!(target.y > -0.358 * target.x + 804.5 &&
+                target.y > 0.47 * target.x + 54.3 &&
+                target.y < -0.57 * target.x + 1920 &&
+                target.y < 0.91 * target.x + 680.25) || monster.notattacked == 5) {
                 monster.notattacked = 5;//all related to not attacked are changed
                 this.attackCircleList[monster.id].kill();
                 //console.log('na='+monster.notattacked);
@@ -196,14 +210,14 @@ fieldState.enemyBound = function (monster) {
             }
             break;
         case "mine":
-            if (!(this.player.y < 0.2 * this.player.x + 1174 &&
-                this.player.y > -0.57 * this.player.x + 1918.09 &&
-                this.player.y > 0.66 * this.player.x - 280))
+            if (!(target.y < 0.2 * target.x + 1174 &&
+                target.y > -0.57 * target.x + 1918.09 &&
+                target.y > 0.66 * target.x - 280))
                 return 1;
             else return 0;
             break;
         case "beach":
-            if (!(this.player.y > -0.27 * this.player.x + 1665 && this.player.y > 0.2 * this.player.x + 1276 && this.player.y < 1891))
+            if (!(target.y > -0.27 * target.x + 1665 && target.y > 0.2 * target.x + 1276 && target.y < 1891))
                 return 1;
             else return 0;
             break;
@@ -224,18 +238,19 @@ fieldState.enemyShoot = function () {
     var shooter = this.enemies[livingEnemiesId[random]];
     if (shooter && shooter.type == 'grass' && shooter.notattacked == 5) return;
 
-    // aim a random player in its range
-    var playersInRange = [];
-    if (this.distance(this.player, shooter) < range) playersInRange.push(this.player);
-    for (var i = 0; i < this.playersList.length; i++) {
-        if (this.playersList[i] && this.distance(this.playersList[i], shooter) < range) {
-            playersInRange.push(this.playersList[i]);
-            //console.log("inrange", shooter.id, i);
+    // aim the nearest player in its range
+    var target = null;
+    var minDist = 350;
+    for (var j = 0; j < this.playersList.length; j++) {
+        console.log(this.enemies[i]);
+        if (this.distance(this.playersList[j], this.enemies[i]) < minDist) {
+            minDist = this.distance(this.playersList[j], this.enemies[i]);
+            target = this.playersList[j];
         }
     }
-    if (playersInRange.length > 0) {
-        var random = this.rnd.integerInRange(0, playersInRange.length - 1);
-        var target = playersInRange[random];
+    if (target) {
+        //var random = this.rnd.integerInRange(0, playersInRange.length - 1);
+        //var target = playersInRange[random];
         var dx = target.x - shooter.body.x;
         var dy = target.y - shooter.body.y;
         dx = dx / this.distance(target, shooter);

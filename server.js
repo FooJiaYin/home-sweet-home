@@ -99,17 +99,6 @@ io.on('connection', function(socket) {
             socket.broadcast.emit('createArrow', socket.player);
         });
 
-        socket.on('moveEnemy', function(data) {
-            //console.log(data);
-            var targetEnemy = server.enemies[data.id]; //use as reference??
-            targetEnemy.x = data.x;
-            targetEnemy.y = data.y;
-            targetEnemy.blood = data.blood;
-            targetEnemy.animation = data.animation;
-            targetEnemy.frame = data.frame;
-            socket.broadcast.emit('updateEnemy', data);
-        });
-
         socket.on('killEnemy', function(id) {
             server.enemies[id].isAlive = false;
             socket.broadcast.emit('removeEnemy', id);
@@ -180,6 +169,17 @@ function setFirstSocket(id) {
             io.emit('addBullet', server.bullets[lastBulletID]);
             console.log("bullet", lastBulletID);
         }
+    });
+    
+    firstSocket.on('moveEnemy', function(data) {
+        //console.log(data);
+        var targetEnemy = server.enemies[data.id]; //use as reference??
+        targetEnemy.x = data.x;
+        targetEnemy.y = data.y;
+        targetEnemy.blood = data.blood;
+        targetEnemy.animation = data.animation;
+        targetEnemy.frame = data.frame;
+        io.emit('updateEnemy', data);
     });
 
     firstSocket.on('outOfBoundsKillBullet', function(id) {
