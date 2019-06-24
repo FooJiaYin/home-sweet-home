@@ -292,7 +292,7 @@ fieldState.dead = function () {
     game.fieldBgm.stop();
     game.playerDie.play();
     game.time.events.add(2500, function () { 
-        this.playersList[id].kill();
+        this.playersList[this.player.id].kill();
         Client.socket.close();
         game.homeBgm.play();
         game.state.start('home'); 

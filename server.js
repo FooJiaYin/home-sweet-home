@@ -39,7 +39,7 @@ io.on('connection', function(socket) {
         // Let server to identify this user later
         
         //if(Object.keys(io.sockets.connected)[0])
-            setFirstSocket(Object.keys(socket.id));
+            setFirstSocket(socket.id);
         //else setFirstSocket(Object.keys(io.sockets.connected)[0]);
 
         if(state == 'field') {
