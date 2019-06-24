@@ -5,6 +5,7 @@ fieldState.setPlayerId = function (newId) {
 }
 
 fieldState.addNewPlayer = function (id, x, y, skin) {
+    console.log("add new player", id);
     if (skin == 1) this.playersList[id] = game.add.sprite(x, y, 'player');
     this.playersList[id].scale.setTo(0.6, 0.6); 
     this.playersList[id].anchor.setTo(0.5, 0.5); 
@@ -18,6 +19,7 @@ fieldState.addNewPlayer = function (id, x, y, skin) {
     game.physics.arcade.enable(this.playersList[id]);
     this.playersList[id].body.collideWorldBounds = true;
     if (id == this.playerId) {
+        console.log("i am", id);
         this.player = this.playersList[id];
         game.camera.follow(this.player, Phaser.Camera.FOLLOW_LOCKON, 0.1, 0.1);
         this.playersList[id].facing = 0;
@@ -27,6 +29,7 @@ fieldState.addNewPlayer = function (id, x, y, skin) {
 }
 
 fieldState.updatePlayer = function (id, x, y, animation, facing) {
+    if(!this.playersList[id]) return;
     this.playersList[id].x = x;
     this.playersList[id].y = y;
     this.playersList[id].facing = facing;
@@ -37,13 +40,16 @@ fieldState.updatePlayer = function (id, x, y, animation, facing) {
         else if(facing == 2) this.playersList[id].frame = 9;
         else this.playersList[id].frame = 22;
     }
-    else this.playersList[id].animations.play(animation);
+    else this.playersList[id].play(animation);
 }
 
 fieldState.removePlayer = function (id) {
+    console.log("removePlayer", id);
     this.playersList[id].kill();
     var deadBody = game.add.sprite(this.playersList[id].x, this.playersList[id].y, 'die');
+    deadBody.scale.setTo(0.6, 0.6);
     game.time.events.add(1000, function () { deadBody.destroy(); }, this);
+    console.log(this.playersList);
 }
 
 /* Action control: phaser input >> server */
@@ -292,7 +298,7 @@ fieldState.dead = function () {
     game.fieldBgm.stop();
     game.playerDie.play();
     game.time.events.add(2500, function () { 
-        this.playersList[this.player.id].kill();
+        //this.playersList[this.player.id].kill();
         Client.socket.close();
         game.homeBgm.play();
         game.state.start('home'); 

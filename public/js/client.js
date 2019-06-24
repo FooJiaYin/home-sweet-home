@@ -34,9 +34,9 @@ Client.killEnemy = function(id) {
 }
 
 Client.generateBullet = function(x, y, velocityX, velocityY, type) {
-    console.log("generateBullet");
+    //console.log("generateBullet");
     Client.socket.emit('generateBullet', {x: x, y: y, velocityX: velocityX, velocityY: velocityY, type: type});
-    console.log('generateBullet', {x: x, y: y, velocityX: velocityX, velocityY: velocityY, type: type});
+    //console.log('generateBullet', {x: x, y: y, velocityX: velocityX, velocityY: velocityY, type: type});
 }
 
 Client.killBullet = function(id, reason) {
@@ -47,7 +47,7 @@ Client.killBullet = function(id, reason) {
 
 Client.sword = function(weapon) {
     Client.socket.emit('sword', weapon);
-    console.log(weapon);
+    //console.log(weapon);
 }
 
 Client.arrow = function() {
@@ -56,11 +56,11 @@ Client.arrow = function() {
 
 Client.sendTest = function() {
     Client.socket.emit('test');
-    console.log('test');
+    //console.log('test');
 };
 
 Client.socket.on('getconnected', function(data) {
-    console.log(data);
+    //console.log(data);
 });
 
 Client.socket.on('firstSocket', function(data) {
@@ -114,7 +114,7 @@ Client.socket.on('allEnemies', function(data) {
 });
 
 Client.socket.on('addEnemy', function(data) {
-    console.log(data);
+    //console.log(data);
     if(Client.gameState == 'field')
         fieldState.addEnemy(data.id, data.x, data.y, data.blood);
 });

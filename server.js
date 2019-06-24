@@ -35,19 +35,19 @@ io.on('connection', function(socket) {
 
     // Add eventlistener to message "newplayer"
     socket.on('init', function(state) {
-        socket.gameState = state;
-        // When being trigger we create a player and add on socket 
-        // Let server to identify this user later
-        
-        //if(Object.keys(io.sockets.connected)[0])
-            setFirstSocket(socket.id);
-        //else setFirstSocket(Object.keys(io.sockets.connected)[0]);
-
         if(state == 'field') {
+            socket.gameState = state;
+            // When being trigger we create a player and add on socket 
+            // Let server to identify this user later
+            
+            //if(Object.keys(io.sockets.connected)[0])
+                setFirstSocket(socket.id);
+            //else setFirstSocket(Object.keys(io.sockets.connected)[0]);
+
             for(lastSessionID=0; lastSessionID<server.alive.length; lastSessionID++) {
                 if(server.alive[lastSessionID] == false) break;
             }
-            server.alive[lastSessionID] == true;
+            server.alive[lastSessionID] = true;
             socket.player = {
                 id: lastSessionID++,
                 x: 190,
@@ -82,6 +82,7 @@ io.on('connection', function(socket) {
 
         socket.on('disconnect', function() {
             server.alive[socket.player.id] = false;
+            console.log('disconnect', server.alive);
             io.emit('removePlayer', socket.player.id);
             if(server.firstSocketID == socket.id) {
                 if(Object.keys(io.sockets.connected)[0])

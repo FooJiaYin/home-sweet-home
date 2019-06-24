@@ -190,7 +190,7 @@ saveState = async function() {
     var flowerNo = Number(document.getElementById('flower').innerHTML);
     var flower1No = Number(document.getElementById('flower1').innerHTML);
     var flower2No = Number(document.getElementById('flower2').innerHTML);
-    console.log("state saved.", hp);
+    //console.log("state saved.", hp);
     firebase.database().ref('profile/' + userId + '/avatar').set({
         hp: hp,
         weapon: weapon,
@@ -199,7 +199,7 @@ saveState = async function() {
         attup: attup,
         speup: speup
     });
-    console.log("furn", game.global.furn);
+    //console.log("furn", game.global.furn);
     await firebase.database().ref('profile/' + userId + '/home/furniture').set(game.global.furn);
     firebase.database().ref('profile/' + userId + '/home/storage').set({
         tableNo: tableNo,

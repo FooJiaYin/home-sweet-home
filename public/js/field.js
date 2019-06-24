@@ -5,6 +5,7 @@ var fieldState = {
   },
   create: function() {
     loadValues();
+    this.playersList = [];
     Client.initState('field');
     var bag = document.getElementById("bag");
     bag.style.left = "";
@@ -288,7 +289,6 @@ var fieldState = {
       a.kill();
     }, this);
 
-    this.playersList = [];
     this.playerGroup = game.add.group();
     this.playerGroup.setAll('anchor.x', 0.5);
     this.playerGroup.setAll('anchor.y', 0.5);
@@ -508,7 +508,7 @@ var fieldState = {
   },
 
   growElement: function() {    
-    console.log("grow");
+    //console.log("grow");
     var grow, i, radian=0, posx, posy;
     var xs = [0, 1];
     var ys = [0, 0.5, 1];
@@ -591,7 +591,7 @@ var fieldState = {
     game.state.start('home');  
   },
   openBag: function() {
-    console.log("open bag");
+    //console.log("open bag");
     var bag = document.getElementById("bag");
     if(bag.style.display == "none"){
       bag.style.display = "block"; 
@@ -628,7 +628,7 @@ var fieldState = {
     }
   },
   closeStore: function() {
-    console.log("close store");
+    //console.log("close store");
     money = 0;
     var bag = document.getElementById("bag");
     bag.style.display = "none"; 

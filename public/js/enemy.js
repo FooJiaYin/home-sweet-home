@@ -35,7 +35,7 @@ fieldState.addEnemy = function (id, x, y, blood) {
     this.enemies[id].checkWorldBounds = true;
     this.enemies[id].outOfBoundsKill = true;
     if (this.enemies[id].type == 'beach' && this.attackCircleList[id]) { //(id==4||id==5||id==6||id==7)
-        console.log("circle", this.enemies[id].type);
+        //console.log("circle", this.enemies[id].type);
         this.attackCircleList[id].reset(x, y);
         this.attackCircleList[id].anchor.setTo(0.5, 0.5);
     }
@@ -240,7 +240,7 @@ fieldState.enemyShoot = function () {
         var dy = target.y - shooter.body.y;
         dx = dx / this.distance(target, shooter);
         dy = dy / this.distance(target, shooter);
-        console.log("shoot", shooter.id, shooter.x, shooter.y, dx * 200, dy * 200, shooter.type);
+        //console.log("shoot", shooter.id, shooter.x, shooter.y, dx * 200, dy * 200, shooter.type);
         Client.generateBullet(shooter.x, shooter.y, dx * 200, dy * 200, shooter.type);
     }
 }
@@ -323,7 +323,7 @@ fieldState.removeBullet = function (id) {
 //attacked
 fieldState.attack_c = function (weapon, monster) {
     monster.blood--;
-    console.log('blood', monster.blood);
+    //console.log('blood', monster.blood);
     if (monster.type == "grass") {
         monster.notattacked = 0;
         this.attackCircleList[monster.id].reset(monster.x, monster.y);
@@ -339,7 +339,7 @@ fieldState.attack_c = function (weapon, monster) {
 fieldState.attack_f = function (weapon, monster) {
     weapon.kill();
     monster.blood--;
-    console.log('blood', monster.blood);
+    //console.log('blood', monster.blood);
     if (monster.type == "grass") {
         monster.notattacked = 0;
         this.attackCircleList[monster.id].reset(monster.x, monster.y);
