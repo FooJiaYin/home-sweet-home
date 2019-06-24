@@ -41,8 +41,8 @@ fieldState.updatePlayer = function (id, x, y, animation, facing) {
 }
 
 fieldState.removePlayer = function (id) {
-    this.playerMap[id].kill();
-    var deadBody = game.add.sprite(this.playerMap[id].x, this.playerMap[id].y, 'die');
+    this.playersList[id].kill();
+    var deadBody = game.add.sprite(this.playersList[id].x, this.playersList[id].y, 'die');
     game.time.events.add(1000, function () { deadBody.destroy(); }, this);
 }
 
@@ -292,7 +292,7 @@ fieldState.dead = function () {
     game.fieldBgm.stop();
     game.playerDie.play();
     game.time.events.add(2500, function () { 
-        //this.removePlayer(this.player.id);
+        this.removePlayer(this.player.id);
         Client.socket.close();
         game.homeBgm.play();
         game.state.start('home'); 

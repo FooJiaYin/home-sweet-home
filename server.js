@@ -38,9 +38,9 @@ io.on('connection', function(socket) {
         // When being trigger we create a player and add on socket 
         // Let server to identify this user later
         
-        if(Object.keys(io.sockets.connected)[0])
-            setFirstSocket(Object.keys(io.sockets.connected)[0]);
-        else setFirstSocket(Object.keys(io.sockets.connected)[0]);
+        //if(Object.keys(io.sockets.connected)[0])
+            setFirstSocket(Object.keys(socket.id));
+        //else setFirstSocket(Object.keys(io.sockets.connected)[0]);
 
         if(state == 'field') {
             socket.player = {
